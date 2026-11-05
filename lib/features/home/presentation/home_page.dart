@@ -547,6 +547,7 @@ class _GameCard extends StatelessWidget {
   final GameDefinition game;
   final VoidCallback onTap;
   Color get _color => switch (game.kind) {
+    GameKind.memory => AppColors.blue,
     GameKind.matching => AppColors.peach,
     GameKind.letters => AppColors.lavender,
     GameKind.counting => AppColors.blue,
@@ -556,6 +557,7 @@ class _GameCard extends StatelessWidget {
     GameKind.drawing => AppColors.lavender,
   };
   IconData get _icon => switch (game.kind) {
+    GameKind.memory => Icons.style_rounded,
     GameKind.matching => Icons.extension_rounded,
     GameKind.letters => Icons.abc_rounded,
     GameKind.counting => Icons.looks_3_outlined,
@@ -584,7 +586,8 @@ class _GameCard extends StatelessWidget {
             ),
             child: Center(
               child:
-                  game.kind == GameKind.clues ||
+                  game.kind == GameKind.memory ||
+                      game.kind == GameKind.clues ||
                       game.kind == GameKind.stories ||
                       game.kind == GameKind.drawing
                   ? Row(

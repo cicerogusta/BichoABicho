@@ -26,8 +26,12 @@ void main() {
               expect(round.answer, round.animal.id);
               continue;
             }
-            expect(round.choices.length, count);
-            expect(round.choices.map((c) => c.value).toSet().length, count);
+            final expectedCount = kind == GameKind.memory ? 3 : count;
+            expect(round.choices.length, expectedCount);
+            expect(
+              round.choices.map((c) => c.value).toSet().length,
+              expectedCount,
+            );
             expect(
               round.choices.where((c) => c.value == round.answer).length,
               1,

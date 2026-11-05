@@ -10,6 +10,7 @@ import '../domain/game_session.dart';
 import 'game_view_model.dart';
 import 'game_round_view.dart';
 import 'drawing_round_view.dart';
+import 'memory_round_view.dart';
 import '../../../core/analytics/usage_analytics.dart';
 
 class GamePage extends StatefulWidget {
@@ -115,6 +116,11 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
                   ? _finished(context)
                   : _model.paused
                   ? _pause(context)
+                  : widget.game.kind == GameKind.memory
+                  ? MemoryRoundView(
+                      model: _model,
+                      onAdvance: () => unawaited(_advance()),
+                    )
                   : widget.game.kind == GameKind.drawing
                   ? DrawingRoundView(
                       model: _model,

@@ -1,4 +1,13 @@
-enum GameKind { matching, letters, counting, speaking, clues, stories, drawing }
+enum GameKind {
+  matching,
+  letters,
+  counting,
+  speaking,
+  clues,
+  stories,
+  drawing,
+  memory,
+}
 
 class GameDefinition {
   const GameDefinition(
@@ -64,5 +73,12 @@ const games = [
     'Seu traço dá vida à turma',
     'Observe o modelo e desenhe o contorno com o dedo.',
     'Desenho e formas',
+  ),
+  GameDefinition(
+    GameKind.memory,
+    'Memória dos bichos',
+    'Vire as cartas e descubra os pares',
+    'Encontre os pares de bichinhos iguais.',
+    'Memória e atenção',
   ),
 ];

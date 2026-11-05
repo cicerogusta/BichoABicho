@@ -16,6 +16,7 @@ enum UsageScreen {
   gameClues,
   gameStories,
   gameDrawing,
+  gameMemory,
 }
 
 UsageScreen gameScreenFor(String gameId) => switch (gameId) {
@@ -26,6 +27,7 @@ UsageScreen gameScreenFor(String gameId) => switch (gameId) {
   'clues' => UsageScreen.gameClues,
   'stories' => UsageScreen.gameStories,
   'drawing' => UsageScreen.gameDrawing,
+  'memory' => UsageScreen.gameMemory,
   _ => throw ArgumentError.value(gameId, 'gameId'),
 };
 
@@ -134,6 +136,7 @@ Map<String, Object>? validatedParameters(Map<UsageParameter, Object> values) {
         'clues',
         'stories',
         'drawing',
+        'memory',
       }.contains(entry.value),
       UsageParameter.animalId => const {
         'dog',

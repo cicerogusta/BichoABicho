@@ -3,6 +3,7 @@ import '../../animals/domain/animal.dart';
 import 'game_definition.dart';
 import 'animal_story.dart';
 import 'drawing_template.dart';
+import 'memory_board.dart';
 
 class GameChoice {
   const GameChoice(this.value, this.label, {this.animal});
@@ -82,7 +83,10 @@ class GameSession {
           distractors.remove(companionChoice);
           distractors.insert(0, companionChoice);
         }
-        final choices = [correct, ...distractors.take(choiceCount - 1)]
+        final roundChoiceCount = kind == GameKind.memory
+            ? MemoryBoard.pairCount
+            : choiceCount;
+        final choices = [correct, ...distractors.take(roundChoiceCount - 1)]
           ..shuffle(generator);
         return GameRound(
           animal: animal,

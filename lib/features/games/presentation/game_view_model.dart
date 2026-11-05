@@ -10,6 +10,8 @@ import '../domain/game_definition.dart';
 import '../domain/drawing_evaluator.dart';
 import '../domain/drawing_template.dart';
 import 'drawing_controller.dart';
+import '../domain/memory_board.dart';
+import 'memory_controller.dart';
 
 enum RoundFeedback { none, retry, correct }
 
@@ -36,6 +38,13 @@ class GameViewModel extends ChangeNotifier {
       ? DrawingController()
       : null;
   int _lastDrawingRevision = -1;
+  MemoryController? _memory;
+  MemoryController get memory => _memory ??= MemoryController(
+    board: MemoryBoard(round.choices.map((choice) => choice.animal!).toList()),
+    onResult: (correct) {
+      if (_acceptsAnswer) _submitResult(correct, inputMethod: 'touch');
+    },
+  );
 
   bool get _acceptsAnswer =>
       !_disposed &&
@@ -127,7 +136,11 @@ class GameViewModel extends ChangeNotifier {
   bool get mediaBusy => _mediaBusy;
 
   void answer(String value, {bool byVoice = false}) {
-    if (!_acceptsAnswer || session.kind == GameKind.drawing) return;
+    if (!_acceptsAnswer ||
+        session.kind == GameKind.drawing ||
+        session.kind == GameKind.memory) {
+      return;
+    }
     if (!round.choices.any((choice) => choice.value == value)) return;
     _submitResult(
       value == round.answer,
@@ -264,6 +277,8 @@ class GameViewModel extends ChangeNotifier {
     }
     await stopMedia();
     if (_disposed) return;
+    _memory?.dispose();
+    _memory = null;
     if (_index == session.rounds.length - 1) {
       _finished = true;
       _sessionWatch.stop();
@@ -436,6 +451,7 @@ class GameViewModel extends ChangeNotifier {
       },
     );
     _paused = true;
+    _memory?.pause();
     notifyListeners();
     await stopMedia();
   }
@@ -446,6 +462,7 @@ class GameViewModel extends ChangeNotifier {
     if (_feedback != RoundFeedback.correct) _roundWatch.start();
     _track(UsageEvent.gameResumed);
     _paused = false;
+    _memory?.resume();
     _mediaMessage = null;
     notifyListeners();
   }
@@ -470,6 +487,7 @@ class GameViewModel extends ChangeNotifier {
     }
     _disposed = true;
     drawing?.dispose();
+    _memory?.dispose();
     _generation++;
     unawaited(_release());
     super.dispose();

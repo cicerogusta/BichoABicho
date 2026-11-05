@@ -139,6 +139,8 @@ void main() {
         },
       );
     }
+    // Memory uses a paired-card flow, covered in memory_game_test.dart.
+    if (game.kind == GameKind.memory) continue;
     testWidgets(
       '${game.kind} supports retry, hint, pause and a completed session by touch',
       (tester) async {
