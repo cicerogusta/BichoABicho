@@ -1,0 +1,27 @@
+Novas gravações de animais — Bicho a Bicho
+
+Vaca — cow.wav
+"Mudchute cow 1.ogg", Secretlondon (Caroline Ford), 2007.
+Fonte: https://commons.wikimedia.org/wiki/File:Mudchute_cow_1.ogg
+Licença da gravação e desta adaptação: Creative Commons Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0).
+https://creativecommons.org/licenses/by-sa/3.0/
+Alterações: conversão para WAV mono PCM 16 bits a 22050 Hz, remoção de offset DC, ajuste de volume, fade e silêncio nas extremidades. A autora não endossa este aplicativo.
+
+Cavalo — horse.wav
+"Wiehern.ogg", Hü., 2006; ajuste de Jonnmann, 2022.
+Fonte: https://commons.wikimedia.org/wiki/File:Wiehern.ogg
+Domínio público por declaração do titular na página de origem.
+
+Ovelha — sheep.wav
+"Sheep bleat.ogg", Eviatar Bach (InverseHypercube), 2011.
+Fonte: https://commons.wikimedia.org/wiki/File:Sheep_bleat.ogg
+CC0 1.0 Universal: https://creativecommons.org/publicdomain/zero/1.0/
+
+Pato — duck.wav
+"Duck Quacking / duck-01.wav", disponibilizado por MediaCollege.com.
+Fonte: https://www.mediacollege.com/downloads/sound-effects/animals/bird/
+Arquivo: https://www.mediacollege.com/downloads/sound-effects/animals/bird/duck/duck-01.wav
+Domínio público (PD), conforme a biblioteca e seus termos:
+https://www.mediacollege.com/downloads/permission/public-domain.html
+
+Todas as quatro gravações receberam conversão, ajuste de volume, fade e silêncio nas extremidades. Consulta às fontes em 05/11/2026. Os sons antigos de cachorro, gato, leão e elefante foram mantidos do projeto preexistente; não se atribui a eles a licença dos novos arquivos.
