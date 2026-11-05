@@ -20,7 +20,7 @@
   </p>
 </div>
 
-![Tela inicial do Bicho a Bicho com as atividades educativas](docs/previews/home_1280x900.png)
+![Tela inicial do Bicho a Bicho com as atividades educativas](docs/previews/readme/home.png)
 
 ## Sobre o projeto
 
@@ -68,20 +68,33 @@ Esses registros representam interações com as atividades. Não constituem uma 
 
 ## Galeria
 
+Capturas da versão atual, geradas diretamente pelos widgets Flutter em resolução 2×. Os cartões e o acompanhamento usam apenas dados fictícios de demonstração. Clique nas imagens para ampliá-las.
+
 <table>
   <tr>
-    <td align="center"><strong>Escolha do cartão</strong><br><img src="docs/previews/profile_selection.png" alt="Tela de seleção dos cartões de usuários" width="240"></td>
-    <td align="center"><strong>Associação visual</strong><br><img src="docs/previews/game_matching.png" alt="Atividade Encontre o bichinho" width="240"></td>
-    <td align="center"><strong>Contagem</strong><br><img src="docs/previews/game_counting.png" alt="Atividade Vamos contar" width="240"></td>
+    <td align="center" valign="top"><strong>Escolha do cartão</strong><br><a href="docs/previews/readme/profiles.png"><img src="docs/previews/readme/profiles.png" alt="Seleção de quatro cartões com animais diferentes e opção de criar um novo" width="240"></a></td>
+    <td align="center" valign="top"><strong>Encontre o bichinho</strong><br><a href="docs/previews/readme/game_matching.png"><img src="docs/previews/readme/game_matching.png" alt="Associação visual com cachorro, cavalo e ovelha entre as alternativas" width="240"></a></td>
+    <td align="center" valign="top"><strong>A letra do bicho</strong><br><a href="docs/previews/readme/game_letters.png"><img src="docs/previews/readme/game_letters.png" alt="Escolha da letra inicial que completa o nome cachorro" width="240"></a></td>
   </tr>
   <tr>
-    <td align="center"><strong>Histórias da turma</strong><br><img src="docs/previews/game_stories.png" alt="Atividade de leitura compartilhada com animais" width="240"></td>
-    <td align="center"><strong>Desenho</strong><br><img src="docs/previews/game_drawing.png" alt="Quadro para desenhar o contorno de um animal" width="240"></td>
-    <td align="center"><strong>Acompanhamento</strong><br><img src="docs/previews/parent_report.png" alt="Relatório local de uso das atividades" width="240"></td>
+    <td align="center" valign="top"><strong>Vamos contar?</strong><br><a href="docs/previews/readme/game_counting.png"><img src="docs/previews/readme/game_counting.png" alt="Contagem de três elefantes com alternativas numéricas" width="240"></a></td>
+    <td align="center" valign="top"><strong>Olá, bichinho!</strong><br><a href="docs/previews/readme/game_speaking.png"><img src="docs/previews/readme/game_speaking.png" alt="Identificação de um cachorro por voz ou escolha de imagem" width="240"></a></td>
+    <td align="center" valign="top"><strong>Detetive dos bichos</strong><br><a href="docs/previews/readme/game_clues.png"><img src="docs/previews/readme/game_clues.png" alt="Descoberta do animal a partir da pista Eu faço au-au" width="240"></a></td>
+  </tr>
+  <tr>
+    <td align="center" valign="top"><strong>Histórias da turma</strong><br><a href="docs/previews/readme/game_stories.png"><img src="docs/previews/readme/game_stories.png" alt="História Uma bola no parque, com duas cenas e pergunta por imagens" width="240"></a></td>
+    <td align="center" valign="top"><strong>Desenhe o bichinho</strong><br><a href="docs/previews/readme/game_drawing.png"><img src="docs/previews/readme/game_drawing.png" alt="Modelo e contorno de gato desenhado, com controles de desfazer, limpar e conferir" width="240"></a></td>
+    <td align="center" valign="top"><strong>Acompanhamento</strong><br><a href="docs/previews/readme/report.png"><img src="docs/previews/readme/report.png" alt="Relatório com registros fictícios, filtros e contadores das atividades" width="240"></a></td>
   </tr>
 </table>
 
-As capturas são geradas pelo renderer do Flutter em testes. Outras telas e tamanhos estão em [docs/previews](docs/previews/).
+<details>
+  <summary><strong>Ver o catálogo completo dos oito bichinhos</strong></summary>
+
+  <p><img src="docs/previews/readme/animals.png" alt="Catálogo atual com cachorro, gato, leão, elefante, vaca, cavalo, ovelha e pato" width="960"></p>
+</details>
+
+As imagens da galeria estão em [docs/previews/readme](docs/previews/readme/). Outros tamanhos de tela usados nos testes estão em [docs/previews](docs/previews/).
 
 ## Tecnologias e arquitetura
 
@@ -177,9 +190,17 @@ flutter build apk --debug
 
 Os testes usam fakes e não dependem de rede, credenciais ou microfone. Cobrem regras das sessões, ViewModels, preferências, cartões, acompanhamento, desenho, consentimento de analytics e interações dos widgets.
 
-O [registro de validação](docs/VALIDATION.md) documenta **162 testes aprovados**, análise estática sem problemas e builds Android debug e Web release concluídos em **5 de novembro de 2026**. Esses resultados pertencem à execução registrada naquele documento; esta revisão do README não reexecutou a suíte.
+O [registro de validação](docs/VALIDATION.md) documenta **162 testes aprovados**, análise estática sem problemas e builds Android debug e Web release concluídos em **5 de novembro de 2026**. A suíte de 162 testes também foi reexecutada com sucesso durante a atualização das capturas da galeria.
 
-Para atualizar as capturas de tela em `docs/previews/`:
+Para regenerar as 11 capturas em alta resolução usadas pelo README:
+
+```sh
+flutter test tool/generate_readme_previews.dart
+```
+
+O gerador usa os componentes reais, fontes e imagens do aplicativo, com aleatoriedade determinística e armazenamento em memória. Não acessa contas, microfone ou dados reais de usuários. Os arquivos são gravados em `docs/previews/readme/`.
+
+Para atualizar também as capturas nos tamanhos de tela usados pela suíte em `docs/previews/`:
 
 ```sh
 flutter test --dart-define=CAPTURE_PREVIEWS=true
