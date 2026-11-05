@@ -20,11 +20,13 @@
   </p>
 </div>
 
-![Tela inicial do Bicho a Bicho com as atividades educativas](docs/previews/readme/home.png)
+<p align="center">
+  <a href="docs/previews/readme/home.png"><img src="docs/previews/readme/home.png" alt="Tela inicial do Bicho a Bicho em layout mobile, apresentada em uma moldura de celular" width="280"></a>
+</p>
 
 ## Sobre o projeto
 
-**Bicho a Bicho** é um aplicativo Flutter em português brasileiro que reúne sete brincadeiras educativas e um catálogo de oito animais com imagens e sons. Associação visual, letras, contagem, fala, pistas, histórias e desenho fazem parte de uma experiência com instruções simples e apoio visual.
+**Bicho a Bicho** é um aplicativo Flutter em português brasileiro que reúne oito brincadeiras educativas e um catálogo de oito animais com imagens e sons. Associação visual, letras, contagem, fala, pistas, histórias, desenho e memória fazem parte de uma experiência com instruções simples e apoio visual.
 
 O projeto considera previsibilidade, acessibilidade cognitiva e personalização para crianças com Transtorno do Espectro Autista (TEA). Famílias e educadores podem ajustar a experiência e acompanhar registros de uso no próprio dispositivo, sem exigir conta para brincar.
 
@@ -41,6 +43,7 @@ O projeto considera previsibilidade, acessibilidade cognitiva e personalização
 | **Detetive dos bichos** | Descobrir qual animal combina com uma pista, com leitura compartilhada. |
 | **Histórias da turma** | Acompanhar quatro histórias originais em duas cenas e responder a perguntas por imagens. |
 | **Desenhe o bichinho** | Desenhar o contorno de cachorro, gato, leão ou elefante, com modelo, dica tracejada e opção de desfazer. |
+| **Memória dos bichos** | Encontrar três pares em seis cartas, com apresentação inicial, virada e embaralhamento animados. Todas as cartas mudam de posição, e os pares ficam separados na sequência. |
 
 Na seção **Bichinhos**, a criança também pode explorar cachorro, gato, leão, elefante, vaca, cavalo, ovelha e pato. As imagens e os sons do catálogo acompanham o aplicativo e estão disponíveis offline.
 
@@ -54,7 +57,7 @@ Pistas e histórias foram pensadas para leitura com um adulto, sem exigir leitur
 - **Movimento reduzido:** ativado por padrão, respeitando também a preferência de acessibilidade do sistema.
 - **Comemorações breves:** feedback visual de acerto e áudio opcional, interrompidos ao pausar, avançar ou sair.
 - **Resposta alternativa:** a atividade de fala também pode ser concluída por toque.
-- **Sessões ajustáveis:** responsáveis escolhem a quantidade de alternativas e a duração em rodadas.
+- **Sessões ajustáveis:** responsáveis escolhem a quantidade de alternativas e a duração em rodadas. O jogo da memória sempre usa seis cartas, formando três pares.
 
 A abertura apresenta a turma por cinco segundos e pode ser pulada em **Começar agora**. Ela aparece uma vez por inicialização. Em movimento reduzido, a turma e as comemorações são exibidas sem animação.
 
@@ -68,31 +71,30 @@ Esses registros representam interações com as atividades. Não constituem uma 
 
 ## Galeria
 
-Capturas da versão atual, geradas diretamente pelos widgets Flutter em resolução 2×. Os cartões e o acompanhamento usam apenas dados fictícios de demonstração. Clique nas imagens para ampliá-las.
+Capturas da versão atual em **layout mobile de 430 × 932**, geradas diretamente pelos widgets Flutter em resolução 2× e apresentadas em uma moldura ilustrativa de celular. As imagens mostram a área visível da tela; conteúdos adicionais podem ser acessados por rolagem no app. Os cartões e o acompanhamento usam apenas dados fictícios de demonstração. Clique nas imagens para ampliá-las.
 
 <table>
   <tr>
     <td align="center" valign="top"><strong>Escolha do cartão</strong><br><a href="docs/previews/readme/profiles.png"><img src="docs/previews/readme/profiles.png" alt="Seleção de quatro cartões com animais diferentes e opção de criar um novo" width="240"></a></td>
+    <td align="center" valign="top"><strong>Memória: observe os pares</strong><br><a href="docs/previews/readme/game_memory.png"><img src="docs/previews/readme/game_memory.png" alt="Jogo da memória no celular com seis cartas de animais reveladas e botão Esconder e embaralhar" width="240"></a></td>
+    <td align="center" valign="top"><strong>Memória: encontre os pares</strong><br><a href="docs/previews/readme/game_memory_hidden.png"><img src="docs/previews/readme/game_memory_hidden.png" alt="Seis cartas escondidas após o embaralhamento, prontas para encontrar os três pares" width="240"></a></td>
+  </tr>
+  <tr>
     <td align="center" valign="top"><strong>Encontre o bichinho</strong><br><a href="docs/previews/readme/game_matching.png"><img src="docs/previews/readme/game_matching.png" alt="Associação visual com cachorro, cavalo e ovelha entre as alternativas" width="240"></a></td>
     <td align="center" valign="top"><strong>A letra do bicho</strong><br><a href="docs/previews/readme/game_letters.png"><img src="docs/previews/readme/game_letters.png" alt="Escolha da letra inicial que completa o nome cachorro" width="240"></a></td>
+    <td align="center" valign="top"><strong>Vamos contar?</strong><br><a href="docs/previews/readme/game_counting.png"><img src="docs/previews/readme/game_counting.png" alt="Contagem de três elefantes com alternativas numéricas" width="240"></a></td>
   </tr>
   <tr>
-    <td align="center" valign="top"><strong>Vamos contar?</strong><br><a href="docs/previews/readme/game_counting.png"><img src="docs/previews/readme/game_counting.png" alt="Contagem de três elefantes com alternativas numéricas" width="240"></a></td>
     <td align="center" valign="top"><strong>Olá, bichinho!</strong><br><a href="docs/previews/readme/game_speaking.png"><img src="docs/previews/readme/game_speaking.png" alt="Identificação de um cachorro por voz ou escolha de imagem" width="240"></a></td>
     <td align="center" valign="top"><strong>Detetive dos bichos</strong><br><a href="docs/previews/readme/game_clues.png"><img src="docs/previews/readme/game_clues.png" alt="Descoberta do animal a partir da pista Eu faço au-au" width="240"></a></td>
+    <td align="center" valign="top"><strong>Histórias da turma</strong><br><a href="docs/previews/readme/game_stories.png"><img src="docs/previews/readme/game_stories.png" alt="História Uma bola no parque, com duas cenas e pergunta por imagens" width="240"></a></td>
   </tr>
   <tr>
-    <td align="center" valign="top"><strong>Histórias da turma</strong><br><a href="docs/previews/readme/game_stories.png"><img src="docs/previews/readme/game_stories.png" alt="História Uma bola no parque, com duas cenas e pergunta por imagens" width="240"></a></td>
     <td align="center" valign="top"><strong>Desenhe o bichinho</strong><br><a href="docs/previews/readme/game_drawing.png"><img src="docs/previews/readme/game_drawing.png" alt="Modelo e contorno de gato desenhado, com controles de desfazer, limpar e conferir" width="240"></a></td>
+    <td align="center" valign="top"><strong>Explore os bichinhos</strong><br><a href="docs/previews/readme/animals.png"><img src="docs/previews/readme/animals.png" alt="Seção Bichinhos no celular, com os animais disponíveis para explorar por imagem e som" width="240"></a></td>
     <td align="center" valign="top"><strong>Acompanhamento</strong><br><a href="docs/previews/readme/report.png"><img src="docs/previews/readme/report.png" alt="Relatório com registros fictícios, filtros e contadores das atividades" width="240"></a></td>
   </tr>
 </table>
-
-<details>
-  <summary><strong>Ver o catálogo completo dos oito bichinhos</strong></summary>
-
-  <p><img src="docs/previews/readme/animals.png" alt="Catálogo atual com cachorro, gato, leão, elefante, vaca, cavalo, ovelha e pato" width="960"></p>
-</details>
 
 As imagens da galeria estão em [docs/previews/readme](docs/previews/readme/). Outros tamanhos de tela usados nos testes estão em [docs/previews](docs/previews/).
 
@@ -190,15 +192,15 @@ flutter build apk --debug
 
 Os testes usam fakes e não dependem de rede, credenciais ou microfone. Cobrem regras das sessões, ViewModels, preferências, cartões, acompanhamento, desenho, consentimento de analytics e interações dos widgets.
 
-O [registro de validação](docs/VALIDATION.md) documenta **162 testes aprovados**, análise estática sem problemas e builds Android debug e Web release concluídos em **5 de novembro de 2026**. A suíte de 162 testes também foi reexecutada com sucesso durante a atualização das capturas da galeria.
+O [registro de validação](docs/VALIDATION.md) documenta a validação anterior de **162 testes aprovados**, análise estática sem problemas e builds Android debug e Web release concluídos em **5 de novembro de 2026**. Após a inclusão do jogo da memória, a suíte passou a **172 testes aprovados**, com análise estática sem problemas e APK release gerado na mesma data.
 
-Para regenerar as 11 capturas em alta resolução usadas pelo README:
+Para regenerar as 13 capturas mobile em alta resolução usadas pelo README:
 
 ```sh
 flutter test tool/generate_readme_previews.dart
 ```
 
-O gerador usa os componentes reais, fontes e imagens do aplicativo, com aleatoriedade determinística e armazenamento em memória. Não acessa contas, microfone ou dados reais de usuários. Os arquivos são gravados em `docs/previews/readme/`.
+O gerador usa os componentes reais, fontes e imagens do aplicativo, sessões de demonstração e armazenamento em memória. Inclui a moldura de celular e os estados de cartas reveladas e escondidas do jogo da memória. Não acessa contas, microfone ou dados reais de usuários. Os arquivos são gravados em `docs/previews/readme/`.
 
 Para atualizar também as capturas nos tamanhos de tela usados pela suíte em `docs/previews/`:
 
