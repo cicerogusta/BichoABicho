@@ -1,10 +1,13 @@
 import 'dart:convert';
+
 import 'package:bicho_a_bicho/features/games/domain/game_definition.dart';
 import 'package:bicho_a_bicho/features/progress/domain/learning_history.dart';
 import 'package:bicho_a_bicho/features/progress/domain/profile_catalog.dart';
 import 'package:bicho_a_bicho/features/settings/presentation/app_settings.dart';
 import 'package:flutter_test/flutter_test.dart';
+
 import 'support/fakes.dart';
+import 'support/localization.dart';
 
 void main() {
   test(
@@ -47,7 +50,7 @@ void main() {
       expect(restored.learningHistory.summarize(ids.last).errors, 1);
       expect(restored.learningHistory.summarize(ids.first).errors, 0);
       expect(restored.profile(ids.last).animalId, 'elephant');
-      expect(restored.profileLabel(ids.last), 'Lia');
+      expect(profileLabel(restored, ids.last), 'Lia');
       final next = await restored.createProfile(animalId: 'cat');
       expect(next, greaterThan(ids.last));
       settings.dispose();
@@ -79,8 +82,8 @@ void main() {
       await settings.load();
       expect(settings.profiles.map((p) => p.id), [0, 1, 2]);
       expect(settings.activeProfile, 2);
-      expect(settings.profileLabel(0), 'Ana');
-      expect(settings.profileLabel(1), 'Gui');
+      expect(profileLabel(settings, 0), 'Ana');
+      expect(profileLabel(settings, 1), 'Gui');
       expect(settings.learningHistory.summarize(2).started, 1);
       expect(await settings.createProfile(animalId: 'elephant'), 3);
       final restored = AppSettings(repository);
@@ -101,7 +104,7 @@ void main() {
         animalId: 'cat',
         name: '  Meu\n amigo ',
       );
-      expect(catalog.profile(1).label, 'Meu amigo');
+      expect(catalog.profile(1).name, 'Meu amigo');
       expect(catalog.update(1, name: '').profile(1).name, isEmpty);
       expect(
         catalog.update(1, name: '🐱' * 30).profile(1).name.runes.length,

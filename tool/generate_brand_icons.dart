@@ -5,11 +5,11 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'package:bicho_a_bicho/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:bicho_a_bicho/core/theme/app_theme.dart';
 
 void main() {
   testWidgets('Export platform brand icons', (tester) async {

@@ -1,9 +1,12 @@
-import 'dart:math';
 import 'dart:async';
+import 'dart:math';
+
 import 'package:bicho_a_bicho/features/games/domain/game_definition.dart';
 import 'package:bicho_a_bicho/features/games/domain/game_session.dart';
+import 'package:bicho_a_bicho/features/games/presentation/game_media_message.dart';
 import 'package:bicho_a_bicho/features/games/presentation/game_view_model.dart';
 import 'package:flutter_test/flutter_test.dart';
+
 import 'support/fakes.dart';
 
 void main() {
@@ -69,11 +72,11 @@ void main() {
     () async {
       await model.playSound(false);
       expect(audio.plays, 0);
-      expect(model.mediaMessage, contains('desligado'));
+      expect(model.mediaMessage, GameMediaMessage.soundDisabled);
       audio.fail = true;
       await model.playSound(true);
       expect(model.mediaBusy, isFalse);
-      expect(model.mediaMessage, contains('não pôde'));
+      expect(model.mediaMessage, GameMediaMessage.soundUnavailable);
       model.answer(model.round.answer);
       expect(model.feedback, RoundFeedback.correct);
     },
@@ -82,7 +85,7 @@ void main() {
     speech.available = false;
     await model.listen();
     expect(model.listening, isFalse);
-    expect(model.mediaMessage, contains('tocando'));
+    expect(model.mediaMessage, GameMediaMessage.speechUnavailable);
     model.answer(model.round.answer);
     expect(model.feedback, RoundFeedback.correct);
   });
@@ -110,7 +113,7 @@ void main() {
       await model.listen();
       speech.onFinal!('não entendi');
       expect(model.feedback, RoundFeedback.none);
-      expect(model.mediaMessage, contains('tocar'));
+      expect(model.mediaMessage, GameMediaMessage.speechNoMatch);
     },
   );
   test('disposed model ignores callbacks and releases resources', () async {

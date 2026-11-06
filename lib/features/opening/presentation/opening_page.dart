@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'dart:math' as math;
+
+import 'package:bicho_a_bicho/features/animals/domain/animal_catalog.dart';
+import 'package:bicho_a_bicho/l10n/localization.dart';
 import 'package:flutter/material.dart';
+
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/soft_card.dart';
-import '../../animals/domain/animal.dart';
 
 class OpeningPage extends StatefulWidget {
   const OpeningPage({super.key, required this.onComplete, this.onSkipped});
@@ -94,7 +97,7 @@ class _OpeningPageState extends State<OpeningPage>
           _complete();
         },
         icon: const Icon(Icons.arrow_forward_rounded),
-        label: const Text('Começar agora'),
+        label: Text(context.l10n.startNow),
       ),
     ),
     body: SafeArea(
@@ -113,15 +116,12 @@ class _OpeningPageState extends State<OpeningPage>
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'bicho a bicho',
+                  context.l10n.appWordmark,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.headlineLarge,
                 ),
                 const SizedBox(height: 12),
-                const Text(
-                  'A turma chegou para brincar!',
-                  textAlign: TextAlign.center,
-                ),
+                Text(context.l10n.openingWelcome, textAlign: TextAlign.center),
                 const SizedBox(height: 32),
                 LayoutBuilder(
                   builder: (context, constraints) {
@@ -185,10 +185,7 @@ class _OpeningPageState extends State<OpeningPage>
                   },
                 ),
                 const SizedBox(height: 32),
-                const Text(
-                  'Cada descoberta, no seu tempo.',
-                  textAlign: TextAlign.center,
-                ),
+                Text(context.l10n.appTagline, textAlign: TextAlign.center),
                 const SizedBox(height: 20),
               ],
             ),

@@ -1,11 +1,15 @@
 import 'dart:math' as math;
+
+import 'package:bicho_a_bicho/l10n/localization.dart';
 import 'package:flutter/material.dart';
+
 import '../../../core/analytics/usage_analytics.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/soft_card.dart';
 import '../../animals/domain/animal.dart';
 import '../../settings/presentation/app_settings.dart';
 import 'profile_appearance.dart';
+import 'profile_labels.dart';
 import 'profile_name_page.dart';
 
 class ProfileSelectionPage extends StatefulWidget {
@@ -73,7 +77,11 @@ class _ProfileSelectionPageState extends State<ProfileSelectionPage> {
       final profiles = widget.settings.profiles
           .where(
             (p) => normalizeWords(
-              '${p.label} ${p.cardNumber} ${p.avatar.name}',
+              context.l10n.profileSearchIndex(
+                p.displayName(context.l10n),
+                p.displayCardNumber(context.l10n),
+                p.avatar.name,
+              ),
             ).contains(query),
           )
           .toList();
@@ -81,7 +89,9 @@ class _ProfileSelectionPageState extends State<ProfileSelectionPage> {
         appBar: AppBar(
           automaticallyImplyLeading: widget.allowBack,
           title: Text(
-            widget.allowCreation ? 'Quem vai brincar?' : 'Escolher cartão',
+            widget.allowCreation
+                ? context.l10n.profileSelectionTitle
+                : context.l10n.selectProfile,
           ),
         ),
         body: SafeArea(
@@ -99,17 +109,17 @@ class _ProfileSelectionPageState extends State<ProfileSelectionPage> {
                         children: [
                           Text(
                             widget.allowCreation
-                                ? 'Toque no seu cartão.'
-                                : 'Escolha um cartão.',
+                                ? context.l10n.profileSelectionPrompt
+                                : context.l10n.selectProfilePrompt,
                             textAlign: TextAlign.center,
                             style: Theme.of(context).textTheme.headlineMedium,
                           ),
                           const SizedBox(height: 16),
                           TextField(
-                            decoration: const InputDecoration(
-                              labelText: 'Buscar cartão',
-                              hintText: 'Nome, animal ou número',
-                              prefixIcon: Icon(Icons.search_rounded),
+                            decoration: InputDecoration(
+                              labelText: context.l10n.searchProfile,
+                              hintText: context.l10n.profileSearchHint,
+                              prefixIcon: const Icon(Icons.search_rounded),
                             ),
                             onChanged: (value) =>
                                 setState(() => _query = value),
@@ -123,11 +133,11 @@ class _ProfileSelectionPageState extends State<ProfileSelectionPage> {
                               key: const ValueKey('new_profile'),
                               onPressed: _create,
                               icon: const Icon(Icons.add_rounded),
-                              label: const Text('Novo cartão'),
+                              label: Text(context.l10n.newProfile),
                             ),
                             const SizedBox(height: 8),
-                            const Text(
-                              'Qualquer pessoa pode criar um cartão, com nome opcional e o bichinho que preferir.',
+                            Text(
+                              context.l10n.profileCreationDescription,
                               textAlign: TextAlign.center,
                             ),
                           ],
@@ -139,9 +149,7 @@ class _ProfileSelectionPageState extends State<ProfileSelectionPage> {
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: EdgeInsets.all(side),
-                        child: const Text(
-                          'Nenhum cartão encontrado. Tente outro nome, animal ou número.',
-                        ),
+                        child: Text(context.l10n.profileSearchEmpty),
                       ),
                     )
                   else
@@ -159,8 +167,11 @@ class _ProfileSelectionPageState extends State<ProfileSelectionPage> {
                           final profile = profiles[index];
                           return Semantics(
                             button: true,
-                            label:
-                                '${profile.label}, ${profile.cardNumber}, bichinho ${profile.avatar.name.toLowerCase()}',
+                            label: context.l10n.profileAccessibilityLabel(
+                              profile.displayName(context.l10n),
+                              profile.displayCardNumber(context.l10n),
+                              profile.avatar.name.toLowerCase(),
+                            ),
                             excludeSemantics: true,
                             onTap: () => _select(profile.id),
                             child: SoftCard(
@@ -177,7 +188,7 @@ class _ProfileSelectionPageState extends State<ProfileSelectionPage> {
                                   ),
                                   const SizedBox(height: 12),
                                   Text(
-                                    profile.label,
+                                    profile.displayName(context.l10n),
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                     textAlign: TextAlign.center,
@@ -186,7 +197,7 @@ class _ProfileSelectionPageState extends State<ProfileSelectionPage> {
                                     ).textTheme.titleLarge,
                                   ),
                                   const SizedBox(height: 8),
-                                  Text(profile.cardNumber),
+                                  Text(profile.displayCardNumber(context.l10n)),
                                   const Spacer(),
                                   Icon(
                                     profile.configured
@@ -202,11 +213,11 @@ class _ProfileSelectionPageState extends State<ProfileSelectionPage> {
                         },
                       ),
                     ),
-                  const SliverToBoxAdapter(
+                  SliverToBoxAdapter(
                     child: Padding(
-                      padding: EdgeInsets.all(24),
+                      padding: const EdgeInsets.all(24),
                       child: Text(
-                        'Use sempre o seu cartão para guardar suas descobertas.',
+                        context.l10n.profileHistoryReminder,
                         textAlign: TextAlign.center,
                       ),
                     ),

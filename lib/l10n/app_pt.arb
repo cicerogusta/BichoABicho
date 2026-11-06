@@ -1,0 +1,1402 @@
+{
+  "@@locale": "pt",
+  "appTitle": "Bicho a Bicho",
+  "@appTitle": {
+    "description": "App title."
+  },
+  "accountNotConfigured": "Contas ainda não foram configuradas nesta plataforma. As brincadeiras continuam disponíveis.",
+  "@accountNotConfigured": {
+    "description": "Account not configured."
+  },
+  "accountUnavailable": "O serviço de contas está indisponível. Você pode continuar brincando sem conta.",
+  "@accountUnavailable": {
+    "description": "Account unavailable."
+  },
+  "accountEmailInUse": "Este e-mail já tem uma conta. Use a opção Entrar.",
+  "@accountEmailInUse": {
+    "description": "Account email in use."
+  },
+  "accountInvalidEmail": "Confira o endereço de e-mail.",
+  "@accountInvalidEmail": {
+    "description": "Account invalid email."
+  },
+  "accountWeakPassword": "Escolha uma senha mais forte, com pelo menos 8 caracteres.",
+  "@accountWeakPassword": {
+    "description": "Account weak password."
+  },
+  "accountConnection": "Confira sua conexão e tente novamente.",
+  "@accountConnection": {
+    "description": "Account connection."
+  },
+  "accountRateLimited": "Aguarde um pouco antes de tentar novamente.",
+  "@accountRateLimited": {
+    "description": "Account rate limited."
+  },
+  "accountInvalidCredentials": "Não foi possível acessar a conta. Confira os dados e tente novamente.",
+  "@accountInvalidCredentials": {
+    "description": "Account invalid credentials."
+  },
+  "accountSignOutFailed": "Não foi possível sair da conta. Tente novamente.",
+  "@accountSignOutFailed": {
+    "description": "Account sign out failed."
+  },
+  "accountTitle": "Conta do responsável",
+  "@accountTitle": {
+    "description": "Account title."
+  },
+  "accountGreeting": "Olá, {name}!",
+  "@accountGreeting": {
+    "description": "Account greeting.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "accountConnected": "Sua conta está conectada. O histórico de brincadeiras fica somente neste dispositivo.",
+  "@accountConnected": {
+    "description": "Account connected."
+  },
+  "backToParents": "Voltar aos responsáveis",
+  "@backToParents": {
+    "description": "Back to parents."
+  },
+  "signOut": "Sair da conta",
+  "@signOut": {
+    "description": "Sign out."
+  },
+  "createAccount": "Criar conta",
+  "@createAccount": {
+    "description": "Create account."
+  },
+  "accountWelcome": "Bem-vindo de volta",
+  "@accountWelcome": {
+    "description": "Account welcome."
+  },
+  "accountOptional": "A conta é opcional. Todas as brincadeiras funcionam sem cadastro.",
+  "@accountOptional": {
+    "description": "Account optional."
+  },
+  "guardianName": "Nome do responsável",
+  "@guardianName": {
+    "description": "Guardian name."
+  },
+  "enterGuardianName": "Informe seu nome.",
+  "@enterGuardianName": {
+    "description": "Enter guardian name."
+  },
+  "email": "E-mail",
+  "@email": {
+    "description": "Email."
+  },
+  "enterValidEmail": "Informe um e-mail válido.",
+  "@enterValidEmail": {
+    "description": "Enter valid email."
+  },
+  "password": "Senha",
+  "@password": {
+    "description": "Password."
+  },
+  "enterPassword": "Informe sua senha.",
+  "@enterPassword": {
+    "description": "Enter password."
+  },
+  "minimumPasswordLength": "Use pelo menos 8 caracteres.",
+  "@minimumPasswordLength": {
+    "description": "Minimum password length."
+  },
+  "signIn": "Entrar",
+  "@signIn": {
+    "description": "Sign in."
+  },
+  "alreadyHaveAccount": "Já tenho uma conta",
+  "@alreadyHaveAccount": {
+    "description": "Already have account."
+  },
+  "wantCreateAccount": "Quero criar uma conta",
+  "@wantCreateAccount": {
+    "description": "Want create account."
+  },
+  "explorerEnableSound": "Ative o som no botão do alto da tela para ouvir.",
+  "@explorerEnableSound": {
+    "description": "Explorer enable sound."
+  },
+  "explorerAudioUnavailable": "Não foi possível tocar o som. Continue explorando as imagens.",
+  "@explorerAudioUnavailable": {
+    "description": "Explorer audio unavailable."
+  },
+  "explorerTitle": "Conheça a nossa turma",
+  "@explorerTitle": {
+    "description": "Explorer title."
+  },
+  "explorerDescription": "Observe os bichinhos. Se quiser, toque para ouvir o som de cada um.",
+  "@explorerDescription": {
+    "description": "Explorer description."
+  },
+  "hearAnimal": "Ouvir o bichinho",
+  "@hearAnimal": {
+    "description": "Hear animal."
+  },
+  "roundProgress": "Descoberta {current} de {total}",
+  "@roundProgress": {
+    "description": "Round progress.",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "drawingPrompt": "Vamos desenhar {animalName}?",
+  "@drawingPrompt": {
+    "description": "Drawing prompt.",
+    "placeholders": {
+      "animalName": {
+        "type": "String"
+      }
+    }
+  },
+  "drawingInstruction": "Observe o modelo. Desenhe o contorno com o dedo e toque em “Conferir desenho”.",
+  "@drawingInstruction": {
+    "description": "Drawing instruction."
+  },
+  "drawingModelLabel": "Modelo do contorno de {animalName}",
+  "@drawingModelLabel": {
+    "description": "Drawing model label.",
+    "placeholders": {
+      "animalName": {
+        "type": "String"
+      }
+    }
+  },
+  "drawingReassurance": "Um traço parecido já vale. Olhos e detalhes não são obrigatórios.",
+  "@drawingReassurance": {
+    "description": "Drawing reassurance."
+  },
+  "discoveryCorrect": "Você descobriu!",
+  "@discoveryCorrect": {
+    "description": "Discovery correct."
+  },
+  "drawingCorrect": "Seu desenho ficou parecido com o modelo!",
+  "@drawingCorrect": {
+    "description": "Drawing correct."
+  },
+  "drawingCanvasLabel": "Área de desenho de {animalName}. Desenhe deslizando um dedo. Pode pedir ajuda ou pular.",
+  "@drawingCanvasLabel": {
+    "description": "Drawing canvas label.",
+    "placeholders": {
+      "animalName": {
+        "type": "String"
+      }
+    }
+  },
+  "undo": "Desfazer",
+  "@undo": {
+    "description": "Undo."
+  },
+  "clear": "Limpar",
+  "@clear": {
+    "description": "Clear."
+  },
+  "hideOutline": "Ocultar contorno",
+  "@hideOutline": {
+    "description": "Hide outline."
+  },
+  "requestHint": "Quero uma dica",
+  "@requestHint": {
+    "description": "Request hint."
+  },
+  "drawingFull": "O quadro está cheio de traços. Você pode desfazer ou limpar.",
+  "@drawingFull": {
+    "description": "Drawing full."
+  },
+  "checkDrawing": "Conferir desenho",
+  "@checkDrawing": {
+    "description": "Check drawing."
+  },
+  "drawingRetry": "Vamos aproximar o contorno do modelo? Acrescente ou ajuste os traços. A dica pode ajudar.",
+  "@drawingRetry": {
+    "description": "Drawing retry."
+  },
+  "finishGame": "Concluir brincadeira",
+  "@finishGame": {
+    "description": "Finish game."
+  },
+  "nextRound": "Próxima descoberta",
+  "@nextRound": {
+    "description": "Next round."
+  },
+  "skipRound": "Pular por enquanto",
+  "@skipRound": {
+    "description": "Skip round."
+  },
+  "celebrationUnavailable": "Você acertou! A música não pôde tocar desta vez.",
+  "@celebrationUnavailable": {
+    "description": "Celebration unavailable."
+  },
+  "speechRetry": "Você pode falar de novo ou tocar na resposta.",
+  "@speechRetry": {
+    "description": "Speech retry."
+  },
+  "soundDisabled": "O som está desligado. Você pode ativá-lo no botão de som.",
+  "@soundDisabled": {
+    "description": "Sound disabled."
+  },
+  "soundUnavailable": "O som não pôde tocar. Você pode continuar pela imagem.",
+  "@soundUnavailable": {
+    "description": "Sound unavailable."
+  },
+  "speechListening": "Estou ouvindo. Diga o nome do bichinho.",
+  "@speechListening": {
+    "description": "Speech listening."
+  },
+  "speechUnavailable": "Não consegui ouvir agora. Você pode responder tocando na imagem.",
+  "@speechUnavailable": {
+    "description": "Speech unavailable."
+  },
+  "speechNoMatch": "Você pode tentar falar de novo ou tocar na resposta.",
+  "@speechNoMatch": {
+    "description": "Speech no match."
+  },
+  "speechFinished": "Pode falar de novo ou escolher uma imagem.",
+  "@speechFinished": {
+    "description": "Speech finished."
+  },
+  "audioUnavailable": "O recurso de áudio está indisponível.",
+  "@audioUnavailable": {
+    "description": "Audio unavailable."
+  },
+  "disableSound": "Desligar sons",
+  "@disableSound": {
+    "description": "Disable sound."
+  },
+  "enableSound": "Ativar sons",
+  "@enableSound": {
+    "description": "Enable sound."
+  },
+  "pauseGame": "Fazer uma pausa",
+  "@pauseGame": {
+    "description": "Pause game."
+  },
+  "pauseTitle": "Vamos fazer uma pausa.",
+  "@pauseTitle": {
+    "description": "Pause title."
+  },
+  "pauseDescription": "A brincadeira espera por você.\nVolte quando quiser.",
+  "@pauseDescription": {
+    "description": "Pause description."
+  },
+  "resumeGame": "Continuar brincando",
+  "@resumeGame": {
+    "description": "Resume game."
+  },
+  "backToHome": "Voltar ao início",
+  "@backToHome": {
+    "description": "Back to home."
+  },
+  "gameFinishedTitle": "Que bom descobrir com você!",
+  "@gameFinishedTitle": {
+    "description": "Game finished title."
+  },
+  "gameFinishedDescription": "Nossa brincadeira chegou ao fim.\nVocê pode descansar ou explorar de novo.",
+  "@gameFinishedDescription": {
+    "description": "Game finished description."
+  },
+  "chooseAnotherGame": "Escolher outra brincadeira",
+  "@chooseAnotherGame": {
+    "description": "Choose another game."
+  },
+  "gameProgress": "Progresso da brincadeira",
+  "@gameProgress": {
+    "description": "Game progress."
+  },
+  "clueHeading": "A pista é:",
+  "@clueHeading": {
+    "description": "Clue heading."
+  },
+  "nameWithoutInitial": "Nome sem a primeira letra: {nameEnding}",
+  "@nameWithoutInitial": {
+    "description": "Name without initial.",
+    "placeholders": {
+      "nameEnding": {
+        "type": "String"
+      }
+    }
+  },
+  "stopListening": "Parar de ouvir",
+  "@stopListening": {
+    "description": "Stop listening."
+  },
+  "requestSpeech": "Quero falar",
+  "@requestSpeech": {
+    "description": "Request speech."
+  },
+  "chooseImage": "Ou escolha uma imagem:",
+  "@chooseImage": {
+    "description": "Choose image."
+  },
+  "countingCorrect": "Isso! Temos {count, plural, =0{0 bichinhos} =1{1 bichinho} other{{count} bichinhos}}.",
+  "@countingCorrect": {
+    "description": "Counting correct.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "animalCorrect": "É {animalName}!",
+  "@animalCorrect": {
+    "description": "Animal correct.",
+    "placeholders": {
+      "animalName": {
+        "type": "String"
+      }
+    }
+  },
+  "retryChoice": "Vamos observar mais um pouquinho? Tente outra opção.",
+  "@retryChoice": {
+    "description": "Retry choice."
+  },
+  "letterHint": "{animalName} começa com {initial}.",
+  "@letterHint": {
+    "description": "Letter hint.",
+    "placeholders": {
+      "animalName": {
+        "type": "String"
+      },
+      "initial": {
+        "type": "String"
+      }
+    }
+  },
+  "countingHint": "Conte tocando em cada bichinho: {numbers}.",
+  "@countingHint": {
+    "description": "Counting hint.",
+    "placeholders": {
+      "numbers": {
+        "type": "String"
+      }
+    }
+  },
+  "clueHint": "A pista fala do {animalName}. Compare as imagens.",
+  "@clueHint": {
+    "description": "Clue hint.",
+    "placeholders": {
+      "animalName": {
+        "type": "String"
+      }
+    }
+  },
+  "matchingHint": "Procure o {animalName}. {clue}",
+  "@matchingHint": {
+    "description": "Matching hint.",
+    "placeholders": {
+      "animalName": {
+        "type": "String"
+      },
+      "clue": {
+        "type": "String"
+      }
+    }
+  },
+  "animalAlreadyCounted": "{animalName} {number}, já contado",
+  "@animalAlreadyCounted": {
+    "description": "Animal already counted.",
+    "placeholders": {
+      "animalName": {
+        "type": "String"
+      },
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "animalTapToCount": "{animalName} {number}, tocar para contar",
+  "@animalTapToCount": {
+    "description": "Animal tap to count.",
+    "placeholders": {
+      "animalName": {
+        "type": "String"
+      },
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "countingInstruction": "Você pode tocar em cada bichinho para contar.",
+  "@countingInstruction": {
+    "description": "Counting instruction."
+  },
+  "countingProgress": "Já contamos {count}.",
+  "@countingProgress": {
+    "description": "Counting progress.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "choiceCorrectLabel": "{choice}, resposta descoberta",
+  "@choiceCorrectLabel": {
+    "description": "Choice correct label.",
+    "placeholders": {
+      "choice": {
+        "type": "String"
+      }
+    }
+  },
+  "choiceRetryLabel": "{choice}, tente outra opção",
+  "@choiceRetryLabel": {
+    "description": "Choice retry label.",
+    "placeholders": {
+      "choice": {
+        "type": "String"
+      }
+    }
+  },
+  "memoryPreview": "Observe os bichinhos. Pode olhar sem pressa!",
+  "@memoryPreview": {
+    "description": "Memory preview."
+  },
+  "memoryHiding": "Vamos esconder os bichinhos…",
+  "@memoryHiding": {
+    "description": "Memory hiding."
+  },
+  "memoryShuffling": "Embaralhando as cartas…",
+  "@memoryShuffling": {
+    "description": "Memory shuffling."
+  },
+  "memoryMismatch": "São diferentes. Vamos tentar outro par?",
+  "@memoryMismatch": {
+    "description": "Memory mismatch."
+  },
+  "memoryComplete": "Você encontrou todos os pares!",
+  "@memoryComplete": {
+    "description": "Memory complete."
+  },
+  "memoryInstruction": "Vire duas cartas e encontre os bichinhos iguais.",
+  "@memoryInstruction": {
+    "description": "Memory instruction."
+  },
+  "memoryProgress": "Pares encontrados",
+  "@memoryProgress": {
+    "description": "Memory progress."
+  },
+  "memoryPrompt": "Encontre os pares de bichinhos iguais.",
+  "@memoryPrompt": {
+    "description": "Memory prompt."
+  },
+  "memoryScore": "{found} de {total} pares • {attempts, plural, =0{0 tentativas} =1{1 tentativa} other{{attempts} tentativas}}",
+  "@memoryScore": {
+    "description": "Memory score.",
+    "placeholders": {
+      "found": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "attempts": {
+        "type": "int"
+      }
+    }
+  },
+  "memoryStart": "Esconder e embaralhar",
+  "@memoryStart": {
+    "description": "Memory start."
+  },
+  "memoryMatchedCard": "Carta {position}: {animalName}, par encontrado",
+  "@memoryMatchedCard": {
+    "description": "Memory matched card.",
+    "placeholders": {
+      "position": {
+        "type": "int"
+      },
+      "animalName": {
+        "type": "String"
+      }
+    }
+  },
+  "memoryVisibleCard": "Carta {position}: {animalName}",
+  "@memoryVisibleCard": {
+    "description": "Memory visible card.",
+    "placeholders": {
+      "position": {
+        "type": "int"
+      },
+      "animalName": {
+        "type": "String"
+      }
+    }
+  },
+  "memoryHiddenCard": "Carta {position}, escondida",
+  "@memoryHiddenCard": {
+    "description": "Memory hidden card.",
+    "placeholders": {
+      "position": {
+        "type": "int"
+      }
+    }
+  },
+  "celebratingAnimal": "{animalName} comemorando seu acerto",
+  "@celebratingAnimal": {
+    "description": "Celebrating animal.",
+    "placeholders": {
+      "animalName": {
+        "type": "String"
+      }
+    }
+  },
+  "storySharedReading": "Faz de conta • leia junto",
+  "@storySharedReading": {
+    "description": "Story shared reading."
+  },
+  "storyReadAgain": "Pode olhar a história de novo quando quiser.",
+  "@storyReadAgain": {
+    "description": "Story read again."
+  },
+  "storySceneLabel": "Cena {number}. {sentence}",
+  "@storySceneLabel": {
+    "description": "Story scene label.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "sentence": {
+        "type": "String"
+      }
+    }
+  },
+  "storySceneNumber": "Cena {number}",
+  "@storySceneNumber": {
+    "description": "Story scene number.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "appWordmark": "bicho a bicho",
+  "@appWordmark": {
+    "description": "App wordmark."
+  },
+  "appTagline": "Cada descoberta, no seu tempo.",
+  "@appTagline": {
+    "description": "App tagline."
+  },
+  "playTab": "Brincar",
+  "@playTab": {
+    "description": "Play tab."
+  },
+  "animalsTab": "Bichinhos",
+  "@animalsTab": {
+    "description": "Animals tab."
+  },
+  "parentsNavigation": "Para responsáveis",
+  "@parentsNavigation": {
+    "description": "Parents navigation."
+  },
+  "parentsTab": "Responsáveis",
+  "@parentsTab": {
+    "description": "Parents tab."
+  },
+  "homeTitle": "O que vamos descobrir hoje?",
+  "@homeTitle": {
+    "description": "Home title."
+  },
+  "homeInstruction": "Escolha uma brincadeira. Vamos juntos, sem pressa.",
+  "@homeInstruction": {
+    "description": "Home instruction."
+  },
+  "switchProfile": "Trocar",
+  "@switchProfile": {
+    "description": "Switch profile."
+  },
+  "homeReassurance": "Aqui, cada tentativa é uma descoberta. Você pode repetir, pedir uma dica ou fazer uma pausa.",
+  "@homeReassurance": {
+    "description": "Home reassurance."
+  },
+  "homeAnimalsTitle": "Uma turma para conhecer",
+  "@homeAnimalsTitle": {
+    "description": "Home animals title."
+  },
+  "seeAnimals": "Ver bichinhos →",
+  "@seeAnimals": {
+    "description": "See animals."
+  },
+  "homeFooter": "Feito para explorar. Com espaço para ser você.",
+  "@homeFooter": {
+    "description": "Home footer."
+  },
+  "homeWelcome": "QUE BOM TER VOCÊ AQUI",
+  "@homeWelcome": {
+    "description": "Home welcome."
+  },
+  "oneDiscoveryAtATime": "Uma descoberta\nde cada vez.",
+  "@oneDiscoveryAtATime": {
+    "description": "One discovery at time."
+  },
+  "homeIntroLabel": "UM MUNDO DE PEQUENAS DESCOBERTAS",
+  "@homeIntroLabel": {
+    "description": "Home intro label."
+  },
+  "homeIntroTitle": "Aprender é melhor\ncom novos amigos.",
+  "@homeIntroTitle": {
+    "description": "Home intro title."
+  },
+  "homeIntroDescription": "Bichinhos, brincadeiras e um mundo para explorar.\nTudo no seu ritmo.",
+  "@homeIntroDescription": {
+    "description": "Home intro description."
+  },
+  "meetAnimals": "Conhecer a turma",
+  "@meetAnimals": {
+    "description": "Meet animals."
+  },
+  "playGameLabel": "Jogar {title}",
+  "@playGameLabel": {
+    "description": "Play game label.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "playTogether": "Vamos brincar",
+  "@playTogether": {
+    "description": "Play together."
+  },
+  "startNow": "Começar agora",
+  "@startNow": {
+    "description": "Start now."
+  },
+  "openingWelcome": "A turma chegou para brincar!",
+  "@openingWelcome": {
+    "description": "Opening welcome."
+  },
+  "reportTitle": "Acompanhamento das brincadeiras",
+  "@reportTitle": {
+    "description": "Report title."
+  },
+  "reportDescription": "Disponível sem login. Escolha abaixo de quem deseja consultar os registros. Consultar outro cartão não muda quem está brincando.",
+  "@reportDescription": {
+    "description": "Report description."
+  },
+  "reportStorageFailure": "Não foi possível ler ou salvar parte dos registros. Os dados desta sessão continuam disponíveis enquanto o app estiver aberto.",
+  "@reportStorageFailure": {
+    "description": "Report storage failure."
+  },
+  "retrySave": "Tentar salvar dados locais",
+  "@retrySave": {
+    "description": "Retry save."
+  },
+  "reportLocalNotice": "Acumulado desde o início do registro ou a última limpeza. A conta opcional não sincroniza estes dados.",
+  "@reportLocalNotice": {
+    "description": "Report local notice."
+  },
+  "reportProfileTitle": "De quem é este relatório?",
+  "@reportProfileTitle": {
+    "description": "Report profile title."
+  },
+  "profileIdentity": "{name} • {cardNumber}",
+  "@profileIdentity": {
+    "description": "Profile identity.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "cardNumber": {
+        "type": "String"
+      }
+    }
+  },
+  "reportActiveProfile": "Brincando agora: {name}. Para trocar quem brinca, use o cartão na tela inicial.",
+  "@reportActiveProfile": {
+    "description": "Report active profile.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "reportActivityFilter": "Atividade do relatório",
+  "@reportActivityFilter": {
+    "description": "Report activity filter."
+  },
+  "allActivities": "Todas as atividades",
+  "@allActivities": {
+    "description": "All activities."
+  },
+  "reportChoicesFilter": "Alternativas no momento da rodada",
+  "@reportChoicesFilter": {
+    "description": "Report choices filter."
+  },
+  "allConfigurations": "Todas as configurações",
+  "@allConfigurations": {
+    "description": "All configurations."
+  },
+  "twoAlternatives": "2 alternativas",
+  "@twoAlternatives": {
+    "description": "Two alternatives."
+  },
+  "threeAlternatives": "3 alternativas",
+  "@threeAlternatives": {
+    "description": "Three alternatives."
+  },
+  "drawingWithoutChoices": "Desenho sem alternativas",
+  "@drawingWithoutChoices": {
+    "description": "Drawing without choices."
+  },
+  "reportEmpty": "Ainda não há registros neste filtro. Abra uma brincadeira com este perfil para começar. O uso anterior à atualização não tinha registro de erros.",
+  "@reportEmpty": {
+    "description": "Report empty."
+  },
+  "reportErrors": "Tentativas incorretas",
+  "@reportErrors": {
+    "description": "Report errors."
+  },
+  "reportRoundsWithErrors": "Rodadas com erro",
+  "@reportRoundsWithErrors": {
+    "description": "Report rounds with errors."
+  },
+  "reportAnsweredWithErrors": "{errors} de {answered} respondidas",
+  "@reportAnsweredWithErrors": {
+    "description": "Report answered with errors.",
+    "placeholders": {
+      "errors": {
+        "type": "int"
+      },
+      "answered": {
+        "type": "int"
+      }
+    }
+  },
+  "reportFirstTry": "Acertos na primeira tentativa",
+  "@reportFirstTry": {
+    "description": "Report first try."
+  },
+  "reportHints": "Rodadas com dica",
+  "@reportHints": {
+    "description": "Report hints."
+  },
+  "reportResolved": "Rodadas resolvidas",
+  "@reportResolved": {
+    "description": "Report resolved."
+  },
+  "reportSkipped": "Rodadas puladas",
+  "@reportSkipped": {
+    "description": "Report skipped."
+  },
+  "reportOpenedRounds": "Rodadas abertas: {started} • Com resposta: {answered}. Rodadas interrompidas também ficam registradas.",
+  "@reportOpenedRounds": {
+    "description": "Report opened rounds.",
+    "placeholders": {
+      "started": {
+        "type": "int"
+      },
+      "answered": {
+        "type": "int"
+      }
+    }
+  },
+  "reportAnimalRanking": "Animais com maior proporção de rodadas com erro",
+  "@reportAnimalRanking": {
+    "description": "Report animal ranking."
+  },
+  "reportRankingDescription": "Ordem pela proporção de rodadas respondidas que tiveram erro, com o tamanho da amostra ao lado. O animal é o alvo da pergunta, inclusive em letras, contagem e histórias.",
+  "@reportRankingDescription": {
+    "description": "Report ranking description."
+  },
+  "reportNoErrors": "Nenhuma tentativa incorreta registrada neste filtro.",
+  "@reportNoErrors": {
+    "description": "Report no errors."
+  },
+  "reportAnimalErrorRate": "Rodadas respondidas com erro: {errors} de {answered} ({percentage}%).",
+  "@reportAnimalErrorRate": {
+    "description": "Report animal error rate.",
+    "placeholders": {
+      "errors": {
+        "type": "int"
+      },
+      "answered": {
+        "type": "int"
+      },
+      "percentage": {
+        "type": "int"
+      }
+    }
+  },
+  "reportAnimalErrorsAndHints": "Tentativas incorretas: {errors} • Rodadas com dica: {hints}",
+  "@reportAnimalErrorsAndHints": {
+    "description": "Report animal errors and hints.",
+    "placeholders": {
+      "errors": {
+        "type": "int"
+      },
+      "hints": {
+        "type": "int"
+      }
+    }
+  },
+  "reportByActivity": "Por atividade",
+  "@reportByActivity": {
+    "description": "Report by activity."
+  },
+  "reportInterpretation": "Como ler: cada resposta incorreta conta como uma tentativa; uma rodada com vários erros conta uma vez em “Rodadas com erro”. Dicas não são erros. Acerto na primeira tentativa pode ter tido dica. Falhas do microfone, pausas e saltos não são erros. Uma amostra pequena ou ajuda de um adulto pode mudar a interpretação. Esses dados descrevem o uso do app e não medem desenvolvimento ou dificuldade clínica.",
+  "@reportInterpretation": {
+    "description": "Report interpretation."
+  },
+  "clearProfileHistory": "Apagar acompanhamento de {name}",
+  "@clearProfileHistory": {
+    "description": "Clear profile history.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "clearProfileHistoryTitle": "Apagar acompanhamento de {name}?",
+  "@clearProfileHistoryTitle": {
+    "description": "Clear profile history title.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "clearProfileHistoryDescription": "Apaga erros, acertos, dicas e rodadas deste perfil em todas as atividades e configurações. Os outros perfis e os ajustes serão preservados.",
+  "@clearProfileHistoryDescription": {
+    "description": "Clear profile history description."
+  },
+  "cancel": "Cancelar",
+  "@cancel": {
+    "description": "Cancel."
+  },
+  "clearHistory": "Apagar acompanhamento",
+  "@clearHistory": {
+    "description": "Clear history."
+  },
+  "reportNoActivityRecords": "Ainda sem registros.",
+  "@reportNoActivityRecords": {
+    "description": "Report no activity records."
+  },
+  "reportActivitySummary": "Tentativas incorretas: {errors} • Rodadas respondidas com erro: {roundsWithErrors} de {answered} • Acertos na primeira tentativa: {firstTry}",
+  "@reportActivitySummary": {
+    "description": "Report activity summary.",
+    "placeholders": {
+      "errors": {
+        "type": "int"
+      },
+      "roundsWithErrors": {
+        "type": "int"
+      },
+      "answered": {
+        "type": "int"
+      },
+      "firstTry": {
+        "type": "int"
+      }
+    }
+  },
+  "profileSaveFailed": "Não foi possível salvar neste aparelho. Tente novamente.",
+  "@profileSaveFailed": {
+    "description": "Profile save failed."
+  },
+  "newProfile": "Novo cartão",
+  "@newProfile": {
+    "description": "New profile."
+  },
+  "profileTitle": "Seu cartão",
+  "@profileTitle": {
+    "description": "Profile title."
+  },
+  "profileAnimalTitle": "Seu cartão do {animalName}",
+  "@profileAnimalTitle": {
+    "description": "Profile animal title.",
+    "placeholders": {
+      "animalName": {
+        "type": "String"
+      }
+    }
+  },
+  "chooseAnimal": "Escolha seu bichinho",
+  "@chooseAnimal": {
+    "description": "Choose animal."
+  },
+  "profileNameQuestion": "Como vamos chamar você?",
+  "@profileNameQuestion": {
+    "description": "Profile name question."
+  },
+  "profileNameHelp": "Um responsável pode ajudar a escrever. O nome aparecerá neste cartão e no acompanhamento das brincadeiras.",
+  "@profileNameHelp": {
+    "description": "Profile name help."
+  },
+  "profileNameLabel": "Nome ou apelido (opcional)",
+  "@profileNameLabel": {
+    "description": "Profile name label."
+  },
+  "profileNameExample": "Ex.: Ana",
+  "@profileNameExample": {
+    "description": "Profile name example."
+  },
+  "profileNameHint": "Pode ser só o primeiro nome.",
+  "@profileNameHint": {
+    "description": "Profile name hint."
+  },
+  "profileLocalNotice": "Salvo somente neste aparelho. Não é necessário criar uma conta.",
+  "@profileLocalNotice": {
+    "description": "Profile local notice."
+  },
+  "saving": "Salvando...",
+  "@saving": {
+    "description": "Saving."
+  },
+  "saveAndPlay": "Salvar e brincar",
+  "@saveAndPlay": {
+    "description": "Save and play."
+  },
+  "saveProfile": "Salvar cartão",
+  "@saveProfile": {
+    "description": "Save profile."
+  },
+  "continueWithoutName": "Continuar sem nome",
+  "@continueWithoutName": {
+    "description": "Continue without name."
+  },
+  "useAnimalOnly": "Usar só o bichinho",
+  "@useAnimalOnly": {
+    "description": "Use animal only."
+  },
+  "profileSearchIndex": "{name} {cardNumber} {animalName}",
+  "@profileSearchIndex": {
+    "description": "Profile search index.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "cardNumber": {
+        "type": "String"
+      },
+      "animalName": {
+        "type": "String"
+      }
+    }
+  },
+  "profileSelectionTitle": "Quem vai brincar?",
+  "@profileSelectionTitle": {
+    "description": "Profile selection title."
+  },
+  "selectProfile": "Escolher cartão",
+  "@selectProfile": {
+    "description": "Select profile."
+  },
+  "profileSelectionPrompt": "Toque no seu cartão.",
+  "@profileSelectionPrompt": {
+    "description": "Profile selection prompt."
+  },
+  "selectProfilePrompt": "Escolha um cartão.",
+  "@selectProfilePrompt": {
+    "description": "Select profile prompt."
+  },
+  "searchProfile": "Buscar cartão",
+  "@searchProfile": {
+    "description": "Search profile."
+  },
+  "profileSearchHint": "Nome, animal ou número",
+  "@profileSearchHint": {
+    "description": "Profile search hint."
+  },
+  "profileCreationDescription": "Qualquer pessoa pode criar um cartão, com nome opcional e o bichinho que preferir.",
+  "@profileCreationDescription": {
+    "description": "Profile creation description."
+  },
+  "profileSearchEmpty": "Nenhum cartão encontrado. Tente outro nome, animal ou número.",
+  "@profileSearchEmpty": {
+    "description": "Profile search empty."
+  },
+  "profileAccessibilityLabel": "{name}, {cardNumber}, bichinho {animalName}",
+  "@profileAccessibilityLabel": {
+    "description": "Profile accessibility label.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "cardNumber": {
+        "type": "String"
+      },
+      "animalName": {
+        "type": "String"
+      }
+    }
+  },
+  "profileHistoryReminder": "Use sempre o seu cartão para guardar suas descobertas.",
+  "@profileHistoryReminder": {
+    "description": "Profile history reminder."
+  },
+  "profilesOnDevice": "Cartões neste aparelho",
+  "@profilesOnDevice": {
+    "description": "Profiles on device."
+  },
+  "profileCountDescription": "{count, plural, =0{0 cartões} =1{1 cartão} other{{count} cartões}}. Qualquer pessoa pode criar outro na tela de entrada, escolher um bichinho e informar um nome se quiser.",
+  "@profileCountDescription": {
+    "description": "Profile count description.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "createProfile": "Criar cartão",
+  "@createProfile": {
+    "description": "Create profile."
+  },
+  "editProfile": "Editar cartão",
+  "@editProfile": {
+    "description": "Edit profile."
+  },
+  "profileSettingsDescription": "Nome e bichinho podem se repetir. Cada cartão tem seu próprio número e histórico. Editar um cartão não muda quem está brincando.",
+  "@profileSettingsDescription": {
+    "description": "Profile settings description."
+  },
+  "analyticsTitle": "Dados de uso opcionais",
+  "@analyticsTitle": {
+    "description": "Analytics title."
+  },
+  "analyticsDescription": "Com autorização do responsável, o Google Analytics (GA4) pode receber telas visitadas, interações dos jogos e ajustes do app, junto com um identificador da instalação e informações do dispositivo. Esses dados ajudam a melhorar as brincadeiras.",
+  "@analyticsDescription": {
+    "description": "Analytics description."
+  },
+  "analyticsPrivacy": "Não enviamos nome, e-mail, senha, idade, diagnóstico, gravações ou transcrições. Não vinculamos a análise à conta do responsável. Publicidade personalizada e identificadores de publicidade estão desativados.",
+  "@analyticsPrivacy": {
+    "description": "Analytics privacy."
+  },
+  "shareUsageData": "Compartilhar dados de uso",
+  "@shareUsageData": {
+    "description": "Share usage data."
+  },
+  "analyticsConsentTitle": "Autorizar dados de uso?",
+  "@analyticsConsentTitle": {
+    "description": "Analytics consent title."
+  },
+  "analyticsConsentDescription": "Esta escolha deve ser feita pelo responsável. Ao autorizar, você permite o envio dos dados de uso descritos nesta tela ao Google Analytics. A autorização é opcional e os jogos continuam funcionando se você recusar.\n\nVocê pode desativar depois. A desativação interrompe a coleta e redefine os dados locais do SDK; não apaga dados já enviados ao Google.",
+  "@analyticsConsentDescription": {
+    "description": "Analytics consent description."
+  },
+  "declineConsent": "Não autorizar",
+  "@declineConsent": {
+    "description": "Decline consent."
+  },
+  "grantConsent": "Sou responsável e autorizo",
+  "@grantConsent": {
+    "description": "Grant consent."
+  },
+  "analyticsApplying": "Aplicando sua escolha…",
+  "@analyticsApplying": {
+    "description": "Analytics applying."
+  },
+  "analyticsNotConfigured": "A análise ainda não está configurada nesta plataforma.",
+  "@analyticsNotConfigured": {
+    "description": "Analytics not configured."
+  },
+  "analyticsFailed": "Não foi possível aplicar ou salvar a escolha. O envio de eventos do app está suspenso. Tente novamente antes de fechar o aplicativo.",
+  "@analyticsFailed": {
+    "description": "Analytics failed."
+  },
+  "tryAgain": "Tentar novamente",
+  "@tryAgain": {
+    "description": "Try again."
+  },
+  "analyticsEnabled": "Coleta autorizada neste dispositivo. Você pode desativar a qualquer momento.",
+  "@analyticsEnabled": {
+    "description": "Analytics enabled."
+  },
+  "analyticsDisabled": "Coleta desativada. Todas as brincadeiras continuam disponíveis.",
+  "@analyticsDisabled": {
+    "description": "Analytics disabled."
+  },
+  "parentsTitle": "Cada criança tem seu ritmo.",
+  "@parentsTitle": {
+    "description": "Parents title."
+  },
+  "parentsDescription": "Ajuste a experiência junto com a criança. Observe o conforto, os interesses e as formas de comunicação que ela prefere.",
+  "@parentsDescription": {
+    "description": "Parents description."
+  },
+  "soundSetting": "Sons e comemorações",
+  "@soundSetting": {
+    "description": "Sound setting."
+  },
+  "soundSettingDescription": "Sons ao tocar e uma música curta ao acertar. Sem música de fundo.",
+  "@soundSettingDescription": {
+    "description": "Sound setting description."
+  },
+  "reducedMotionSetting": "Movimento reduzido",
+  "@reducedMotionSetting": {
+    "description": "Reduced motion setting."
+  },
+  "reducedMotionDescription": "Reduz transições. A preferência do sistema também é respeitada.",
+  "@reducedMotionDescription": {
+    "description": "Reduced motion description."
+  },
+  "choicesSetting": "Opções por descoberta",
+  "@choicesSetting": {
+    "description": "Choices setting."
+  },
+  "choiceCount": "{count, plural, =0{0 opções} =1{1 opção} other{{count} opções}}",
+  "@choiceCount": {
+    "description": "Choice count.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "roundsSetting": "Tamanho da brincadeira",
+  "@roundsSetting": {
+    "description": "Rounds setting."
+  },
+  "sessionRoundCount": "{count, plural, =0{0 descobertas} =1{1 descoberta} other{{count} descobertas}}",
+  "@sessionRoundCount": {
+    "description": "Session round count.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsNextGame": "As mudanças valem para a próxima brincadeira.",
+  "@settingsNextGame": {
+    "description": "Settings next game."
+  },
+  "settingsStorageFailure": "Não foi possível salvar neste dispositivo. As mudanças atuais continuam disponíveis enquanto o app estiver aberto.",
+  "@settingsStorageFailure": {
+    "description": "Settings storage failure."
+  },
+  "completedGamesTitle": "Nosso caminho de descobertas",
+  "@completedGamesTitle": {
+    "description": "Completed games title."
+  },
+  "completedGamesDescription": "Brincadeiras concluídas neste dispositivo. Este registro não mede desenvolvimento nem desempenho.",
+  "@completedGamesDescription": {
+    "description": "Completed games description."
+  },
+  "clearLocalHistory": "Apagar histórico local",
+  "@clearLocalHistory": {
+    "description": "Clear local history."
+  },
+  "educationalPurpose": "Brincar com intenção",
+  "@educationalPurpose": {
+    "description": "Educational purpose."
+  },
+  "educationalAlignment": "Associação, exploração de sons, expressão e pequenas quantidades dialogam com os campos de experiência da Educação Infantil na BNCC. As letras são uma exploração lúdica, sem exigir alfabetização.",
+  "@educationalAlignment": {
+    "description": "Educational alignment."
+  },
+  "educationalReassurance": "Não há cronômetro, perda de pontos ou exigência de fala. Ofereça ajuda sem pressionar. Respeite pausas e o desejo de parar.",
+  "@educationalReassurance": {
+    "description": "Educational reassurance."
+  },
+  "sharedReadingGuidance": "Para brincar de Detetive dos bichos, leia a pista e compare as imagens junto com a criança. Em Histórias da turma, leia as duas cenas e a pergunta; a história fica disponível para consultar. A criança pode tocar ou indicar uma imagem para você selecionar. Não é preciso saber ler.",
+  "@sharedReadingGuidance": {
+    "description": "Shared reading guidance."
+  },
+  "educationalSources": "Essas duas propostas foram adaptadas de atividades de adivinhação e contação com figuras reunidas pela Secretaria de Educação de Santa Catarina. As narrativas e ilustrações do app são próprias. Experimente também com livros e brinquedos fora da tela, respeitando os interesses da criança.",
+  "@educationalSources": {
+    "description": "Educational sources."
+  },
+  "educationalDisclaimer": "O app é um recurso educativo complementar. A adequação das atividades deve ser avaliada com a família e a equipe pedagógica. Não faz avaliação clínica.",
+  "@educationalDisclaimer": {
+    "description": "Educational disclaimer."
+  },
+  "privacyAndAccount": "Privacidade e conta",
+  "@privacyAndAccount": {
+    "description": "Privacy and account."
+  },
+  "privacyDescription": "Os jogos não precisam de conta ou internet. O histórico fica neste dispositivo. O compartilhamento opcional de eventos de uso está descrito nos ajustes de dados acima. Não é necessário informar nome ou idade da criança. Os apelidos opcionais dos cartões ficam neste aparelho.\n\nO microfone só é solicitado no botão “Quero falar”. O serviço de reconhecimento do sistema pode enviar áudio ao provedor do dispositivo e precisar de internet. O app não grava nem armazena esse áudio. Prefira responder por toque se não desejar usar o microfone.",
+  "@privacyDescription": {
+    "description": "Privacy description."
+  },
+  "optionalAccount": "Conta opcional do responsável",
+  "@optionalAccount": {
+    "description": "Optional account."
+  },
+  "licenses": "Licenças e créditos",
+  "@licenses": {
+    "description": "Licenses."
+  },
+  "resetHistoryTitle": "Apagar o histórico?",
+  "@resetHistoryTitle": {
+    "description": "Reset history title."
+  },
+  "resetHistoryDescription": "As contagens de brincadeiras e o acompanhamento de todos os perfis deste dispositivo serão apagados. Os ajustes serão mantidos.",
+  "@resetHistoryDescription": {
+    "description": "Reset history description."
+  },
+  "keepHistory": "Manter histórico",
+  "@keepHistory": {
+    "description": "Keep history."
+  },
+  "delete": "Apagar",
+  "@delete": {
+    "description": "Delete."
+  },
+  "animalSoundsLicense": "Sons dos animais",
+  "@animalSoundsLicense": {
+    "description": "Animal sounds license."
+  },
+  "gameMatchingTitle": "Encontre o bichinho",
+  "@gameMatchingTitle": {
+    "description": "Matching game title."
+  },
+  "gameMatchingSubtitle": "Observe, descubra e associe",
+  "@gameMatchingSubtitle": {
+    "description": "Matching game subtitle."
+  },
+  "gameMatchingInstruction": "Toque no bichinho igual ao da imagem.",
+  "@gameMatchingInstruction": {
+    "description": "Matching game instruction."
+  },
+  "gameMatchingSkill": "Associação visual",
+  "@gameMatchingSkill": {
+    "description": "Matching game skill."
+  },
+  "gameLettersTitle": "A letra do bicho",
+  "@gameLettersTitle": {
+    "description": "Letters game title."
+  },
+  "gameLettersSubtitle": "Uma descoberta de cada vez",
+  "@gameLettersSubtitle": {
+    "description": "Letters game subtitle."
+  },
+  "gameLettersInstruction": "Toque na letra que completa o nome.",
+  "@gameLettersInstruction": {
+    "description": "Letters game instruction."
+  },
+  "gameLettersSkill": "Letras e nomes",
+  "@gameLettersSkill": {
+    "description": "Letters game skill."
+  },
+  "gameCountingTitle": "Vamos contar?",
+  "@gameCountingTitle": {
+    "description": "Counting game title."
+  },
+  "gameCountingSubtitle": "Pequenos grupos, grandes descobertas",
+  "@gameCountingSubtitle": {
+    "description": "Counting game subtitle."
+  },
+  "gameCountingInstruction": "Conte os bichinhos. Toque no número.",
+  "@gameCountingInstruction": {
+    "description": "Counting game instruction."
+  },
+  "gameCountingSkill": "Quantidades de 1 a 4",
+  "@gameCountingSkill": {
+    "description": "Counting game skill."
+  },
+  "gameSpeakingTitle": "Olá, bichinho!",
+  "@gameSpeakingTitle": {
+    "description": "Speaking game title."
+  },
+  "gameSpeakingSubtitle": "Fale ou escolha: os dois valem",
+  "@gameSpeakingSubtitle": {
+    "description": "Speaking game subtitle."
+  },
+  "gameSpeakingInstruction": "Diga o nome do bichinho ou toque na resposta.",
+  "@gameSpeakingInstruction": {
+    "description": "Speaking game instruction."
+  },
+  "gameSpeakingSkill": "Expressão e reconhecimento",
+  "@gameSpeakingSkill": {
+    "description": "Speaking game skill."
+  },
+  "gameCluesTitle": "Detetive dos bichos",
+  "@gameCluesTitle": {
+    "description": "Clues game title."
+  },
+  "gameCluesSubtitle": "Uma pista para uma descoberta",
+  "@gameCluesSubtitle": {
+    "description": "Clues game subtitle."
+  },
+  "gameCluesInstruction": "Leia com alguém. Qual bichinho combina com a pista?",
+  "@gameCluesInstruction": {
+    "description": "Clues game instruction."
+  },
+  "gameCluesSkill": "Pistas e características",
+  "@gameCluesSkill": {
+    "description": "Clues game skill."
+  },
+  "gameStoriesTitle": "Histórias da turma",
+  "@gameStoriesTitle": {
+    "description": "Stories game title."
+  },
+  "gameStoriesSubtitle": "Pequenas histórias para ler juntos",
+  "@gameStoriesSubtitle": {
+    "description": "Stories game subtitle."
+  },
+  "gameStoriesInstruction": "Leia com alguém. Depois, toque na resposta.",
+  "@gameStoriesInstruction": {
+    "description": "Stories game instruction."
+  },
+  "gameStoriesSkill": "Escuta e compreensão",
+  "@gameStoriesSkill": {
+    "description": "Stories game skill."
+  },
+  "gameDrawingTitle": "Desenhe o bichinho",
+  "@gameDrawingTitle": {
+    "description": "Drawing game title."
+  },
+  "gameDrawingSubtitle": "Seu traço dá vida à turma",
+  "@gameDrawingSubtitle": {
+    "description": "Drawing game subtitle."
+  },
+  "gameDrawingInstruction": "Observe o modelo e desenhe o contorno com o dedo.",
+  "@gameDrawingInstruction": {
+    "description": "Drawing game instruction."
+  },
+  "gameDrawingSkill": "Desenho e formas",
+  "@gameDrawingSkill": {
+    "description": "Drawing game skill."
+  },
+  "gameMemoryTitle": "Memória dos bichos",
+  "@gameMemoryTitle": {
+    "description": "Memory game title."
+  },
+  "gameMemorySubtitle": "Vire as cartas e descubra os pares",
+  "@gameMemorySubtitle": {
+    "description": "Memory game subtitle."
+  },
+  "gameMemoryInstruction": "Encontre os pares de bichinhos iguais.",
+  "@gameMemoryInstruction": {
+    "description": "Memory game instruction."
+  },
+  "gameMemorySkill": "Memória e atenção",
+  "@gameMemorySkill": {
+    "description": "Memory game skill."
+  },
+  "guardian": "Responsável",
+  "@guardian": {
+    "description": "Default display name for an account without a name."
+  },
+  "profileDefaultName": "Meu {animalName}",
+  "@profileDefaultName": {
+    "description": "Profile name when no nickname was provided.",
+    "placeholders": {
+      "animalName": {
+        "type": "String"
+      }
+    }
+  },
+  "profileCardNumber": "Cartão {number}",
+  "@profileCardNumber": {
+    "description": "Stable card number shown to distinguish equal names.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "homePlayPrompt": "Vamos\nbrincar?",
+  "@homePlayPrompt": {
+    "description": "Compact welcome title shown on mobile."
+  }
+}

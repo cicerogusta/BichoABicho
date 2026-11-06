@@ -1,12 +1,14 @@
-import 'support/profile_navigation.dart';
 import 'package:bicho_a_bicho/app/app.dart';
 import 'package:bicho_a_bicho/core/analytics/analytics_controller.dart';
 import 'package:bicho_a_bicho/features/settings/presentation/analytics_settings_card.dart';
 import 'package:bicho_a_bicho/features/settings/presentation/app_settings.dart';
+import 'package:bicho_a_bicho/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+
 import 'support/fake_analytics.dart';
 import 'support/fakes.dart';
+import 'support/profile_navigation.dart';
 
 void main() {
   testWidgets(
@@ -24,6 +26,8 @@ void main() {
       await analytics.setConsent(true);
       await tester.pumpWidget(
         MaterialApp(
+          supportedLocales: AppLocalizations.supportedLocales,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
           home: Scaffold(
             body: SingleChildScrollView(
               child: AnalyticsSettingsCard(analytics: analytics),
@@ -125,6 +129,8 @@ void main() {
       );
       await tester.pumpWidget(
         MaterialApp(
+          supportedLocales: AppLocalizations.supportedLocales,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
           home: Scaffold(
             body: SingleChildScrollView(
               child: AnalyticsSettingsCard(analytics: analytics),
@@ -199,6 +205,8 @@ void main() {
     );
     await tester.pumpWidget(
       MaterialApp(
+        supportedLocales: AppLocalizations.supportedLocales,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
         home: Scaffold(
           body: SingleChildScrollView(
             child: AnalyticsSettingsCard(analytics: analytics),
@@ -233,6 +241,8 @@ void main() {
     );
     await tester.pumpWidget(
       MaterialApp(
+        supportedLocales: AppLocalizations.supportedLocales,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
         home: Scaffold(
           body: SingleChildScrollView(
             child: AnalyticsSettingsCard(analytics: analytics),

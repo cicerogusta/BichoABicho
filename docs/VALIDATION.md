@@ -6,10 +6,34 @@ Execução em Windows, em 05/11/2026, com Flutter 3.47.9 e Dart 3.13.7.
 | --- | --- |
 | `dart format --output=none --set-exit-if-changed lib test tool` | Arquivos formatados |
 | `flutter analyze` | Nenhum problema encontrado |
-| `flutter test` | 162 testes aprovados |
-| `flutter test tool/generate_brand_icons.dart` | Exportação dos ícones concluída |
-| `flutter build apk --debug` | APK Android gerado |
+| `flutter gen-l10n` | 280 recursos de interface gerados a partir do ARB |
+| `flutter test --dart-define=CAPTURE_PREVIEWS=true` | 184 testes aprovados; capturas em `build/previews/` |
+| `flutter test tool/generate_readme_previews.dart` | Gerador validado e 13 capturas mobile atualizadas |
+| `flutter build apk --release --no-pub` | APK Android release gerado |
 | `flutter build web --release` | Build web gerado; dry run de compilação Wasm também aprovado |
+
+## Revisão de limpeza e localização
+
+A revisão preservou as funcionalidades, o README, suas 13 capturas mobile, os 19 recursos do bundle e os créditos de licença. Foram retirados vídeos e seus geradores, arquivo `lib.rar`, logs, 17 prévias duplicadas, dez assets legados e três fontes sem uso. Capturas opcionais dos testes foram centralizadas em um helper e passaram a ser saída de build.
+
+As strings da interface, acessibilidade, mensagens e metadados de jogos estão em `lib/l10n/app_pt.arb`. A geração usa o `gen-l10n` oficial, com parâmetros tipados e casos explícitos de zero, singular e plural. Nomes dos animais e histórias permanecem em catálogos pedagógicos Dart independentes de Flutter. A auditoria de literais não encontrou texto de linguagem natural remanescente nos arquivos de apresentação. As 59 referências locais dos documentos foram verificadas, sem referências quebradas.
+
+Os adaptadores são compostos em `AppDependencies`. `GameMediaController` foi separado da progressão das rodadas, e `AnimalExplorerViewModel` passou a controlar reprodução e cancelamento no catálogo. Erros de conta e mídia são tipados; a apresentação faz sua tradução. O ViewModel de conta descarta resultados tardios depois do encerramento e expõe estado somente para leitura. As coleções de alternativas também são protegidas no próprio modelo de rodada.
+
+Os 12 testes adicionais cobrem plurais, rótulos sem mutar dados persistidos, catálogo localizado, tradução de estados tipados, contratos de arquitetura, substituição de dependências, cancelamento de áudio e resultados tardios de autenticação. A suíte anterior foi mantida.
+
+`intl` passou a ser dependência direta por ser usado pelo código gerado. A dependência transitiva `synchronized` foi atualizada para 3.6.1. `cupertino_icons` foi mantida: controles adaptativos do próprio Flutter referenciam sua fonte, mesmo sem import explícito nas telas. O build Web final incluiu essa fonte e não voltou a emitir o aviso de fonte ausente.
+
+### Avisos externos e limites
+
+- `flutter analyze` concluiu sem erros, warnings ou infos. Não foram adicionadas supressões para esconder diagnósticos.
+- O Gradle continua emitindo um aviso de acesso nativo da JVM e o Flutter informa que os plugins `firebase_core`, `firebase_auth` e `firebase_analytics` ainda aplicam KGP. As flags de compatibilidade foram mantidas conforme a [orientação oficial do Flutter](https://docs.flutter.dev/release/breaking-changes/migrate-to-built-in-kotlin); a migração completa depende de suporte dos plugins.
+- Três versões transitivas mais recentes continuam limitadas pelas restrições do SDK. Não foram usados `dependency_overrides` para forçar versões incompatíveis.
+- Builds iOS, macOS, Windows e Linux e testes em aparelhos físicos não foram executados nesta revisão.
+- Após `flutter clean`, as dependências foram regeneradas com `FLUTTER_WINDOWS=false` e `FLUTTER_LINUX=false` somente no processo de validação, pois este Windows exige Modo de Desenvolvedor para criar os links dos plugins desktop. Nenhuma configuração global do Flutter ou do Windows foi alterada.
+- Os arquivos de build e as ferramentas temporárias de migração são descartáveis e não integram o código-fonte.
+
+## Histórico das validações anteriores
 
 ## Nome do projeto
 

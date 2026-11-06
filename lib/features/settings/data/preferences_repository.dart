@@ -1,6 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import '../domain/settings_repository.dart';
+
 import '../../games/domain/game_definition.dart';
+import '../domain/settings_repository.dart';
 
 class PreferencesRepository implements SettingsRepository {
   final SharedPreferencesAsync _preferences = SharedPreferencesAsync();

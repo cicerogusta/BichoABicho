@@ -1,30 +1,27 @@
 import 'dart:async';
+
+import 'package:bicho_a_bicho/l10n/localization.dart';
 import 'package:flutter/material.dart';
-import '../../../core/services/animal_audio.dart';
-import '../../../core/services/animal_speech.dart';
+
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/soft_card.dart';
 import '../../settings/presentation/app_settings.dart';
 import '../domain/game_definition.dart';
-import '../domain/game_session.dart';
-import 'game_view_model.dart';
-import 'game_round_view.dart';
 import 'drawing_round_view.dart';
+import 'game_round_view.dart';
+import 'game_view_model.dart';
 import 'memory_round_view.dart';
-import '../../../core/analytics/usage_analytics.dart';
 
 class GamePage extends StatefulWidget {
   const GamePage({
     super.key,
     required this.game,
     required this.settings,
-    this.viewModel,
-    this.analytics = const NoopUsageAnalytics(),
+    required this.viewModel,
   });
   final GameDefinition game;
   final AppSettings settings;
-  final GameViewModel? viewModel;
-  final UsageAnalytics analytics;
+  final GameViewModel viewModel;
   @override
   State<GamePage> createState() => _GamePageState();
 }
@@ -35,20 +32,7 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    _model =
-        widget.viewModel ??
-        GameViewModel(
-          session: GameSession(
-            kind: widget.game.kind,
-            choiceCount: widget.settings.choiceCount,
-            rounds: widget.settings.rounds,
-          ),
-          audio: AssetAnimalAudio(),
-          speech: DeviceAnimalSpeech(),
-          soundEnabled: () => widget.settings.soundEnabled,
-          analytics: widget.analytics,
-          onObservation: widget.settings.recorderForActiveProfile(),
-        );
+    _model = widget.viewModel;
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -88,8 +72,8 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
         actions: [
           IconButton(
             tooltip: widget.settings.soundEnabled
-                ? 'Desligar sons'
-                : 'Ativar sons',
+                ? context.l10n.disableSound
+                : context.l10n.enableSound,
             onPressed: () => unawaited(_toggleSound()),
             icon: Icon(
               widget.settings.soundEnabled
@@ -99,7 +83,7 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
           ),
           if (!_model.finished)
             IconButton(
-              tooltip: 'Fazer uma pausa',
+              tooltip: context.l10n.pauseGame,
               icon: const Icon(Icons.pause_circle_outline_rounded),
               onPressed: () => unawaited(_model.pause()),
             ),
@@ -147,24 +131,21 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
         const Icon(Icons.spa_outlined, size: 64, color: AppColors.primary),
         const SizedBox(height: 20),
         Text(
-          'Vamos fazer uma pausa.',
+          context.l10n.pauseTitle,
           style: Theme.of(context).textTheme.headlineMedium,
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 12),
-        const Text(
-          'A brincadeira espera por você.\nVolte quando quiser.',
-          textAlign: TextAlign.center,
-        ),
+        Text(context.l10n.pauseDescription, textAlign: TextAlign.center),
         const SizedBox(height: 28),
         FilledButton(
           onPressed: _model.resume,
-          child: const Text('Continuar brincando'),
+          child: Text(context.l10n.resumeGame),
         ),
         const SizedBox(height: 12),
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Voltar ao início'),
+          child: Text(context.l10n.backToHome),
         ),
       ],
     ),
@@ -182,19 +163,16 @@ class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
         ),
         const SizedBox(height: 20),
         Text(
-          'Que bom descobrir com você!',
+          context.l10n.gameFinishedTitle,
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.headlineMedium,
         ),
         const SizedBox(height: 12),
-        const Text(
-          'Nossa brincadeira chegou ao fim.\nVocê pode descansar ou explorar de novo.',
-          textAlign: TextAlign.center,
-        ),
+        Text(context.l10n.gameFinishedDescription, textAlign: TextAlign.center),
         const SizedBox(height: 28),
         FilledButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Escolher outra brincadeira'),
+          child: Text(context.l10n.chooseAnotherGame),
         ),
         const SizedBox(height: 20),
       ],

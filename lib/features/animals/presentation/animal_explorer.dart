@@ -1,22 +1,26 @@
 import 'dart:async';
+
+import 'package:bicho_a_bicho/features/animals/domain/animal_catalog.dart';
+import 'package:bicho_a_bicho/l10n/localization.dart';
 import 'package:flutter/material.dart';
+
+import '../../../core/analytics/usage_analytics.dart';
 import '../../../core/services/animal_audio.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/soft_card.dart';
 import '../../settings/presentation/app_settings.dart';
-import '../domain/animal.dart';
-import '../../../core/analytics/usage_analytics.dart';
+import 'animal_explorer_view_model.dart';
 
 class AnimalExplorer extends StatefulWidget {
   const AnimalExplorer({
     super.key,
     required this.settings,
     this.analytics = const NoopUsageAnalytics(),
-    this.audio,
+    required this.createAudio,
   });
   final AppSettings settings;
   final UsageAnalytics analytics;
-  final AnimalAudio? audio;
+  final AnimalAudio Function() createAudio;
   @override
   State<AnimalExplorer> createState() => _AnimalExplorerState();
 }
@@ -29,150 +33,120 @@ class _AnimalExplorerState extends State<AnimalExplorer>
     AppColors.yellow,
     AppColors.blue,
   ];
-  late final AnimalAudio _audio;
-  String? _message;
-  bool _busy = false;
+  late final AnimalExplorerViewModel _model;
   @override
   void initState() {
     super.initState();
-    _audio = widget.audio ?? AssetAnimalAudio();
+    _model = AnimalExplorerViewModel(
+      widget.createAudio(),
+      soundEnabled: () => widget.settings.soundEnabled,
+      analytics: widget.analytics,
+    );
     WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void didUpdateWidget(AnimalExplorer oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (!widget.settings.soundEnabled) unawaited(_stop());
+    if (!widget.settings.soundEnabled) unawaited(_model.stop());
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state != AppLifecycleState.resumed) unawaited(_stop());
-  }
-
-  Future<void> _stop() async {
-    try {
-      await _audio.stop();
-    } on Exception {
-      /* No audio is needed to explore images. */
-    }
+    if (state != AppLifecycleState.resumed) unawaited(_model.stop());
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    unawaited(_audio.dispose());
+    _model.dispose();
     super.dispose();
   }
 
-  Future<void> _play(Animal animal) async {
-    if (_busy) return;
-    widget.analytics.event(
-      UsageEvent.animalSoundRequested,
-      parameters: {UsageParameter.animalId: animal.id},
-    );
-    if (!widget.settings.soundEnabled) {
-      setState(
-        () => _message = 'Ative o som no botão do alto da tela para ouvir.',
-      );
-      return;
-    }
-    setState(() {
-      _busy = true;
-      _message = null;
-    });
-    try {
-      await _audio.play(animal.sound);
-    } on Exception {
-      widget.analytics.event(
-        UsageEvent.mediaUnavailable,
-        parameters: {UsageParameter.feature: 'animal_audio'},
-      );
-      if (mounted) {
-        setState(
-          () => _message =
-              'Não foi possível tocar o som. Continue explorando as imagens.',
-        );
-      }
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
-  }
-
   @override
-  Widget build(BuildContext context) => SingleChildScrollView(
-    padding: const EdgeInsets.all(24),
-    child: Center(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 1000),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 16),
-            Text(
-              'Conheça a nossa turma',
-              style: Theme.of(context).textTheme.headlineLarge,
-            ),
-            const SizedBox(height: 12),
-            const Text(
-              'Observe os bichinhos. Se quiser, toque para ouvir o som de cada um.',
-            ),
-            const SizedBox(height: 28),
-            LayoutBuilder(
-              builder: (context, constraints) {
-                final columns = constraints.maxWidth > 650 ? 2 : 1;
-                return Wrap(
-                  spacing: 20,
-                  runSpacing: 20,
-                  children: [
-                    for (var i = 0; i < animals.length; i++)
-                      SizedBox(
-                        width:
-                            (constraints.maxWidth - (columns - 1) * 20) /
-                            columns,
-                        child: SoftCard(
-                          color: _cardColors[i % _cardColors.length],
-                          child: Column(
-                            children: [
-                              AnimalPicture(
-                                path: animals[i].image,
-                                label: animals[i].name,
-                                size: 148,
-                              ),
-                              const SizedBox(height: 16),
-                              Text(
-                                animals[i].name,
-                                style: Theme.of(
-                                  context,
-                                ).textTheme.headlineMedium,
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                animals[i].clue,
-                                textAlign: TextAlign.center,
-                              ),
-                              const SizedBox(height: 20),
-                              OutlinedButton.icon(
-                                onPressed: _busy
-                                    ? null
-                                    : () => unawaited(_play(animals[i])),
-                                icon: const Icon(Icons.volume_up_outlined),
-                                label: const Text('Ouvir o bichinho'),
-                              ),
-                            ],
+  Widget build(BuildContext context) => ListenableBuilder(
+    listenable: _model,
+    builder: (context, _) => SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1000),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 16),
+              Text(
+                context.l10n.explorerTitle,
+                style: Theme.of(context).textTheme.headlineLarge,
+              ),
+              const SizedBox(height: 12),
+              Text(context.l10n.explorerDescription),
+              const SizedBox(height: 28),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final columns = constraints.maxWidth > 650 ? 2 : 1;
+                  return Wrap(
+                    spacing: 20,
+                    runSpacing: 20,
+                    children: [
+                      for (var i = 0; i < animals.length; i++)
+                        SizedBox(
+                          width:
+                              (constraints.maxWidth - (columns - 1) * 20) /
+                              columns,
+                          child: SoftCard(
+                            color: _cardColors[i % _cardColors.length],
+                            child: Column(
+                              children: [
+                                AnimalPicture(
+                                  path: animals[i].image,
+                                  label: animals[i].name,
+                                  size: 148,
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  animals[i].name,
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.headlineMedium,
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  animals[i].clue,
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: 20),
+                                OutlinedButton.icon(
+                                  onPressed: _model.busy
+                                      ? null
+                                      : () =>
+                                            unawaited(_model.play(animals[i])),
+                                  icon: const Icon(Icons.volume_up_outlined),
+                                  label: Text(context.l10n.hearAnimal),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                  ],
-                );
-              },
-            ),
-            if (_message != null)
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Semantics(liveRegion: true, child: Text(_message!)),
+                    ],
+                  );
+                },
               ),
-          ],
+              if (_model.message != null)
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Semantics(
+                    liveRegion: true,
+                    child: Text(switch (_model.message!) {
+                      ExplorerMessage.soundDisabled =>
+                        context.l10n.explorerEnableSound,
+                      ExplorerMessage.soundUnavailable =>
+                        context.l10n.explorerAudioUnavailable,
+                    }),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     ),

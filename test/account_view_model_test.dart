@@ -1,35 +1,41 @@
+import 'dart:async';
+
+import 'package:bicho_a_bicho/core/analytics/usage_analytics.dart';
 import 'package:bicho_a_bicho/features/account/domain/account_repository.dart';
+import 'package:bicho_a_bicho/features/account/presentation/account_message.dart';
 import 'package:bicho_a_bicho/features/account/presentation/account_view_model.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:bicho_a_bicho/core/analytics/usage_analytics.dart';
+
 import 'support/fake_analytics.dart';
+import 'support/fakes.dart';
 
-class FakeAccountRepository implements AccountRepository {
-  String? name;
-  AccountFailure? failure;
-  int signIns = 0;
-  @override
-  Future<String?> currentName() async => name;
-  @override
-  Future<String> register(String name, String email, String password) async {
-    if (failure != null) throw failure!;
-    return this.name = name;
-  }
+class PendingAccountRepository extends FakeAccountRepository {
+  final pendingName = Completer<String?>();
 
   @override
-  Future<String> signIn(String email, String password) async {
-    signIns++;
-    if (failure != null) throw failure!;
-    return name = 'Responsável';
-  }
-
-  @override
-  Future<void> signOut() async {
-    name = null;
-  }
+  Future<String?> currentName() => pendingName.future;
 }
 
 void main() {
+  test(
+    'disposed accounts ignore late results and refuse new operations',
+    () async {
+      final repository = PendingAccountRepository();
+      final analytics = RecordingAnalytics();
+      final model = AccountViewModel(repository, analytics: analytics);
+      final loading = model.load();
+      model.dispose();
+      repository.pendingName.complete('Late name');
+      await loading;
+      await model.submit(email: 'example@example.test', password: 'example');
+      await model.signOut();
+      expect(model.name, isNull);
+      expect(repository.signIns, 0);
+      expect(analytics.events, isEmpty);
+      expect(analytics.screens, isEmpty);
+    },
+  );
+
   test('account analytics never includes identity or credentials', () async {
     final repository = FakeAccountRepository();
     final analytics = RecordingAnalytics();
@@ -85,7 +91,7 @@ void main() {
       ..failure = const AccountFailure(AccountFailureKind.connection);
     final model = AccountViewModel(repository);
     await model.submit(email: 'adult@example.test', password: 'example-only');
-    expect(model.error, contains('conexão'));
+    expect(model.error, AccountMessage.connection);
     expect(model.busy, isFalse);
     repository.failure = null;
     await model.submit(email: 'adult@example.test', password: 'example-only');

@@ -2,19 +2,21 @@
 
 ## Estrutura
 
-`main.dart` inicializa somente preferências locais. `app/app.dart` configura tema, idioma pt-BR e a raiz de navegação. Firebase não bloqueia a inicialização dos jogos.
+`main.dart` inicializa preferências locais e recursos de localização. `app/app.dart` configura tema, idioma pt-BR e a raiz de navegação. Firebase não bloqueia a inicialização dos jogos.
 
 `AppEntry` mantém a conclusão da abertura no estado da raiz. `OpeningPage` possui uma animação finita de 5 segundos, cancelamento por descarte e suspensão no segundo plano. A apresentação reduzida usa um timer cancelável de 5 segundos. Não há navegação adicional ou rota de abertura para reaparecer ao voltar de um jogo.
 
 Comemorações de acerto são iniciadas no `GameViewModel`, com consulta à preferência de som antes da reprodução. A mesma geração que protege os callbacks de fala invalida músicas ainda pendentes ao pausar, trocar de rodada ou sair. O widget de comemoração controla somente o movimento, por 1,8 segundo, respeitando `MediaQuery.disableAnimations`. Não há efeitos colaterais de áudio em `build` nem novas dependências.
 
-- `features/animals/domain`: catálogo imutável, caminhos dos recursos e normalização de português.
+- `features/animals/domain`: entidade `Animal`, catálogo pedagógico imutável em `animal_catalog.dart` e normalização de português.
 - `features/games/domain`: definições dos jogos e geração de rodadas. Não importa Flutter ou plugins. `Random` pode ser injetado para execução determinística nos testes.
-- `features/games/presentation`: `GameViewModel` controla a sessão; `GamePage` possui ciclo de vida e navegação; `GameRoundView` compõe a atividade.
+- `features/games/presentation`: `GameViewModel` controla a sessão; `GameMediaController` coordena áudio e fala; `GamePage` possui ciclo de vida e navegação; `GameRoundView` compõe a atividade. `gameCatalog` recebe os recursos localizados para montar os metadados da interface.
 - `features/settings/domain`: contrato de armazenamento. `data` implementa SharedPreferencesAsync. `AppSettings` expõe estado somente para leitura e serializa gravações para evitar inversão da ordem em alterações rápidas.
 - `features/account/domain`: contrato e falhas de autenticação sem dependência do SDK Firebase. `data` adapta Firebase e traduz os erros. `presentation` gerencia formulários e estados de carregamento/erro/sucesso.
 - `core/theme` e `core/widgets`: tokens e componentes compartilhados.
-- `core/services`: adaptadores de áudio e fala com contratos substituíveis.
+- `core/services`: contratos de áudio e fala em arquivos independentes dos adaptadores `AssetAnimalAudio` e `DeviceAnimalSpeech`.
+- `app/app_dependencies.dart`: composição e fábricas dos adaptadores, injetadas nas features; nenhuma tela seleciona implementações de infraestrutura.
+- `l10n`: textos de interface em ARB, com `gen-l10n`, parâmetros tipados e plurais ICU.
 
 ## Decisões
 
@@ -24,13 +26,21 @@ Feature-first com MVVM e domínio apenas onde existe comportamento independente.
 
 A navegação tem três seções principais e rotas locais de jogo/conta com `Navigator` e `MaterialPageRoute`. Não existe necessidade atual de deep links, rotas protegidas ou GoRouter. A conta não é uma barreira para o acesso infantil.
 
-`GameSession` prepara opções imutáveis uma única vez. Uma sessão passa pelos quatro animais antes de repeti-los. O embaralhamento nunca ocorre na renderização. A quantidade de alternativas e de rodadas é capturada no começo da sessão.
+`GameSession` prepara opções imutáveis uma única vez. Uma sessão percorre os animais suportados antes de repeti-los. O embaralhamento nunca ocorre na renderização. A quantidade de alternativas e de rodadas é capturada no começo da sessão; o jogo da memória sempre usa três pares.
 
-`GameViewModel` aceita serviços falsos em testes, impede avanço duplicado e invalida callbacks antigos por geração quando a rodada muda, pausa ou é descartada. A preparação do microfone também verifica se houve cancelamento durante o pedido de permissão. O adaptador de fala lida com o singleton do plugin, que conserva listeners após inicialização. O adaptador de áudio serializa comandos de reprodução, parada e descarte.
+`GameViewModel` aceita serviços falsos em testes e impede avanço duplicado. O ciclo de vida de mídia fica em `GameMediaController`, que invalida callbacks antigos por geração quando a rodada muda, pausa ou é descartada. A preparação do microfone também verifica se houve cancelamento durante o pedido de permissão. O adaptador de fala lida com o singleton do plugin, que conserva listeners após inicialização. O adaptador de áudio serializa comandos de reprodução, parada e descarte. A exploração de animais usa `AnimalExplorerViewModel`, com controle equivalente de cancelamento e estados tipados.
 
 O SDK `speech_to_text` continua sendo uma integração opcional: ausência de pt-BR, indisponibilidade de rede, plataforma não suportada e permissão negada oferecem resposta por toque. O reconhecimento não é instrumento de avaliação de pronúncia.
 
-Os novos animais possuem 1254 × 1254 pixels, com fundo transparente. A decodificação usa dimensões ajustadas ao tamanho exibido e à densidade da tela, limitadas a 1024 pixels. Os recursos antigos são preservados no repositório, mas somente arquivos usados entram no bundle.
+Os animais possuem 1254 × 1254 pixels, com fundo transparente. A decodificação usa dimensões ajustadas ao tamanho exibido e à densidade da tela, limitadas a 1024 pixels. Recursos legados não usados, vídeos promocionais, arquivos compactados e prévias duplicadas foram retirados do projeto. A galeria do README e os créditos de licença foram preservados; capturas opcionais dos testes são geradas em `build/previews/`.
+
+## Localização e conteúdo pedagógico
+
+`lib/l10n/app_pt.arb` concentra os textos da interface, acessibilidade, mensagens e metadados dos jogos. `l10n.yaml` configura a geração oficial do Flutter; `AppLocalizations` oferece acesso tipado e `context.l10n` simplifica o uso nas telas. Estados de erro e mídia são enums nos ViewModels; a apresentação converte esses estados em mensagens localizadas. Rótulos de cartões também pertencem à apresentação, sem texto de interface no modelo persistido.
+
+O curso continua em português: nomes de animais e pistas estão em `animal_catalog.dart`, e as narrativas originais em `story_catalog.dart`. Alterar o idioma da interface não deve trocar implicitamente o conteúdo que determina respostas de letras, fala e histórias. Esses catálogos permanecem em Dart puro, separados dos widgets e dos recursos de localização.
+
+As práticas seguem as recomendações oficiais de [localização](https://docs.flutter.dev/ui/internationalization) e [arquitetura](https://docs.flutter.dev/app-architecture/recommendations), preservando `ChangeNotifier`, injeção por construtor e domínio somente onde há regras de negócio.
 
 ## Compatibilidade
 

@@ -7,7 +7,7 @@ class FirebaseAccountRepository implements AccountRepository {
   @override
   Future<String?> currentName() async {
     final user = (await _auth()).currentUser;
-    return user == null ? null : user.displayName ?? 'Responsável';
+    return user == null ? null : user.displayName ?? '';
   }
 
   Future<FirebaseAuth> _auth() async {
@@ -26,7 +26,7 @@ class FirebaseAccountRepository implements AccountRepository {
       email: email.trim(),
       password: password,
     );
-    return credential.user?.displayName ?? 'Responsável';
+    return credential.user?.displayName ?? '';
   });
 
   @override

@@ -12,13 +12,14 @@ import 'package:bicho_a_bicho/features/games/presentation/game_view_model.dart';
 import 'package:bicho_a_bicho/features/games/presentation/memory_controller.dart';
 import 'package:bicho_a_bicho/features/progress/presentation/learning_report.dart';
 import 'package:bicho_a_bicho/features/settings/presentation/app_settings.dart';
+import 'package:bicho_a_bicho/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../test/support/fakes.dart';
+import '../test/support/localization.dart';
 import '../test/support/profile_navigation.dart';
 
 const _phoneSize = Size(430, 932);
@@ -143,8 +144,8 @@ Widget _app(Widget home) => MaterialApp(
   debugShowCheckedModeBanner: false,
   theme: AppTheme.create(),
   locale: const Locale('pt', 'BR'),
-  supportedLocales: const [Locale('pt', 'BR')],
-  localizationsDelegates: GlobalMaterialLocalizations.delegates,
+  supportedLocales: AppLocalizations.supportedLocales,
+  localizationsDelegates: AppLocalizations.localizationsDelegates,
   home: home,
 );
 
@@ -191,7 +192,7 @@ Future<ui.Image> _framePhone(ui.Image screen) async {
   final recorder = ui.PictureRecorder();
   final canvas = Canvas(recorder)..scale(scale);
   final device = RRect.fromRectAndRadius(
-    Offset(margin, margin) & deviceSize,
+    const Offset(margin, margin) & deviceSize,
     const Radius.circular(42),
   );
   canvas.drawShadow(Path()..addRRect(device), const Color(0x55000000), 8, true);

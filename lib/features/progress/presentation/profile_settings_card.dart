@@ -1,3 +1,4 @@
+import 'package:bicho_a_bicho/l10n/localization.dart';
 import 'package:flutter/material.dart';
 import '../../../core/analytics/usage_analytics.dart';
 import '../../../core/theme/app_theme.dart';
@@ -55,13 +56,11 @@ class ProfileSettingsCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Cartões neste aparelho',
+            context.l10n.profilesOnDevice,
             style: Theme.of(context).textTheme.titleLarge,
           ),
           const SizedBox(height: 12),
-          Text(
-            '${settings.profiles.length} cartões. Qualquer pessoa pode criar outro na tela de entrada, escolher um bichinho e informar um nome se quiser.',
-          ),
+          Text(context.l10n.profileCountDescription(settings.profiles.length)),
           const SizedBox(height: 12),
           Wrap(
             spacing: 12,
@@ -70,19 +69,17 @@ class ProfileSettingsCard extends StatelessWidget {
               OutlinedButton.icon(
                 onPressed: () => _create(context),
                 icon: const Icon(Icons.person_add_alt_1_rounded),
-                label: const Text('Criar cartão'),
+                label: Text(context.l10n.createProfile),
               ),
               OutlinedButton.icon(
                 onPressed: () => _edit(context),
                 icon: const Icon(Icons.edit_outlined),
-                label: const Text('Editar cartão'),
+                label: Text(context.l10n.editProfile),
               ),
             ],
           ),
           const SizedBox(height: 12),
-          const Text(
-            'Nome e bichinho podem se repetir. Cada cartão tem seu próprio número e histórico. Editar um cartão não muda quem está brincando.',
-          ),
+          Text(context.l10n.profileSettingsDescription),
         ],
       ),
     ),

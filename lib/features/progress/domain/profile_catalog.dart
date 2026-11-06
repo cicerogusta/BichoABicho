@@ -1,4 +1,7 @@
 import 'dart:convert';
+
+import 'package:bicho_a_bicho/features/animals/domain/animal_catalog.dart';
+
 import '../../animals/domain/animal.dart';
 
 String normalizeProfileName(String name) => String.fromCharCodes(
@@ -17,8 +20,6 @@ class LearnerProfile {
   final String name;
   final bool configured;
   Animal get avatar => animals.firstWhere((a) => a.id == animalId);
-  String get label => name.isEmpty ? 'Meu ${avatar.name}' : name;
-  String get cardNumber => 'Cartão ${id + 1}';
 }
 
 class ProfileCatalog {

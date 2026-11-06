@@ -1,8 +1,12 @@
 import 'dart:async';
+
+import 'package:bicho_a_bicho/l10n/localization.dart';
 import 'package:flutter/material.dart';
-import '../../../core/widgets/soft_card.dart';
-import 'account_view_model.dart';
+
 import '../../../core/analytics/usage_analytics.dart';
+import '../../../core/widgets/soft_card.dart';
+import 'account_message_text.dart';
+import 'account_view_model.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({
@@ -53,7 +57,7 @@ class _AccountPageState extends State<AccountPage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('Conta do responsável')),
+    appBar: AppBar(title: Text(context.l10n.accountTitle)),
     body: SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Center(
@@ -66,26 +70,29 @@ class _AccountPageState extends State<AccountPage> {
                   ? Column(
                       children: [
                         Text(
-                          'Olá, ${_model.name}!',
+                          context.l10n.accountGreeting(
+                            _model.name!.isEmpty
+                                ? context.l10n.guardian
+                                : _model.name!,
+                          ),
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
                         const SizedBox(height: 12),
-                        const Text(
-                          'Sua conta está conectada. O histórico de brincadeiras fica somente neste dispositivo.',
-                        ),
-                        if (_model.error != null) Text(_model.error!),
+                        Text(context.l10n.accountConnected),
+                        if (_model.error != null)
+                          Text(_model.error!.resolve(context)),
                         const SizedBox(height: 20),
                         FilledButton.icon(
                           onPressed: () => Navigator.of(context).pop(),
                           icon: const Icon(Icons.insights_outlined),
-                          label: const Text('Voltar aos responsáveis'),
+                          label: Text(context.l10n.backToParents),
                         ),
                         const SizedBox(height: 12),
                         OutlinedButton(
                           onPressed: _model.busy
                               ? null
                               : () => unawaited(_model.signOut()),
-                          child: const Text('Sair da conta'),
+                          child: Text(context.l10n.signOut),
                         ),
                       ],
                     )
@@ -95,23 +102,23 @@ class _AccountPageState extends State<AccountPage> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Text(
-                            _register ? 'Criar conta' : 'Bem-vindo de volta',
+                            _register
+                                ? context.l10n.createAccount
+                                : context.l10n.accountWelcome,
                             style: Theme.of(context).textTheme.headlineMedium,
                           ),
                           const SizedBox(height: 12),
-                          const Text(
-                            'A conta é opcional. Todas as brincadeiras funcionam sem cadastro.',
-                          ),
+                          Text(context.l10n.accountOptional),
                           const SizedBox(height: 24),
                           if (_register) ...[
                             TextFormField(
                               controller: _name,
-                              decoration: const InputDecoration(
-                                labelText: 'Nome do responsável',
+                              decoration: InputDecoration(
+                                labelText: context.l10n.guardianName,
                               ),
                               validator: (value) =>
                                   (value?.trim().isEmpty ?? true)
-                                  ? 'Informe seu nome.'
+                                  ? context.l10n.enterGuardianName
                                   : null,
                             ),
                             const SizedBox(height: 16),
@@ -120,8 +127,8 @@ class _AccountPageState extends State<AccountPage> {
                             controller: _email,
                             keyboardType: TextInputType.emailAddress,
                             autofillHints: const [AutofillHints.email],
-                            decoration: const InputDecoration(
-                              labelText: 'E-mail',
+                            decoration: InputDecoration(
+                              labelText: context.l10n.email,
                             ),
                             validator: (value) =>
                                 value != null &&
@@ -129,7 +136,7 @@ class _AccountPageState extends State<AccountPage> {
                                       r'^[^\s@]+@[^\s@]+\.[^\s@]+$',
                                     ).hasMatch(value.trim())
                                 ? null
-                                : 'Informe um e-mail válido.',
+                                : context.l10n.enterValidEmail,
                           ),
                           const SizedBox(height: 16),
                           TextFormField(
@@ -137,13 +144,13 @@ class _AccountPageState extends State<AccountPage> {
                             obscureText: true,
                             autocorrect: false,
                             enableSuggestions: false,
-                            decoration: const InputDecoration(
-                              labelText: 'Senha',
+                            decoration: InputDecoration(
+                              labelText: context.l10n.password,
                             ),
                             validator: (value) => value == null || value.isEmpty
-                                ? 'Informe sua senha.'
+                                ? context.l10n.enterPassword
                                 : _register && value.length < 8
-                                ? 'Use pelo menos 8 caracteres.'
+                                ? context.l10n.minimumPasswordLength
                                 : null,
                           ),
                           const SizedBox(height: 20),
@@ -152,7 +159,7 @@ class _AccountPageState extends State<AccountPage> {
                               padding: const EdgeInsets.only(bottom: 16),
                               child: Semantics(
                                 liveRegion: true,
-                                child: Text(_model.error!),
+                                child: Text(_model.error!.resolve(context)),
                               ),
                             ),
                           FilledButton(
@@ -161,8 +168,8 @@ class _AccountPageState extends State<AccountPage> {
                               _model.busy
                                   ? 'Aguarde…'
                                   : _register
-                                  ? 'Criar conta'
-                                  : 'Entrar',
+                                  ? context.l10n.createAccount
+                                  : context.l10n.signIn,
                             ),
                           ),
                           TextButton(
@@ -180,8 +187,8 @@ class _AccountPageState extends State<AccountPage> {
                                   }),
                             child: Text(
                               _register
-                                  ? 'Já tenho uma conta'
-                                  : 'Quero criar uma conta',
+                                  ? context.l10n.alreadyHaveAccount
+                                  : context.l10n.wantCreateAccount,
                             ),
                           ),
                         ],

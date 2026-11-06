@@ -1,26 +1,39 @@
 import 'dart:async';
+
+import 'package:bicho_a_bicho/features/animals/domain/animal_catalog.dart';
+import 'package:bicho_a_bicho/l10n/localization.dart';
 import 'package:flutter/material.dart';
-import '../../../core/theme/app_theme.dart';
-import '../../../core/widgets/soft_card.dart';
-import '../../animals/domain/animal.dart';
-import '../../animals/presentation/animal_explorer.dart';
-import '../../games/domain/game_definition.dart';
-import '../../games/presentation/game_page.dart';
-import '../../settings/presentation/app_settings.dart';
-import '../../settings/presentation/parent_page.dart';
+
 import '../../../core/analytics/analytics_controller.dart';
 import '../../../core/analytics/usage_analytics.dart';
+import '../../../core/services/animal_audio.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/soft_card.dart';
+import '../../animals/presentation/animal_explorer.dart';
+import '../../games/domain/game_definition.dart';
+import '../../games/presentation/game_catalog.dart';
+import '../../games/presentation/game_page.dart';
+import '../../games/presentation/game_view_model.dart';
+import '../../progress/presentation/profile_labels.dart';
 import '../../progress/presentation/profile_selection_page.dart';
+import '../../settings/presentation/app_settings.dart';
+import '../../settings/presentation/parent_page.dart';
+import 'widgets/game_catalog_card.dart';
+import 'widgets/welcome_banner.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({
     super.key,
     required this.settings,
     required this.accountBuilder,
+    required this.createGame,
+    required this.createAudio,
     this.analytics,
   });
   final AppSettings settings;
   final WidgetBuilder accountBuilder;
+  final GameViewModel Function(GameDefinition) createGame;
+  final AnimalAudio Function() createAudio;
   final AnalyticsController? analytics;
   @override
   State<HomePage> createState() => _HomePageState();
@@ -99,13 +112,13 @@ class _HomePageState extends State<HomePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'bicho a bicho',
+                          context.l10n.appWordmark,
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
                         if (wide)
-                          const Text(
-                            'Cada descoberta, no seu tempo.',
-                            style: TextStyle(
+                          Text(
+                            context.l10n.appTagline,
+                            style: const TextStyle(
                               fontSize: 12,
                               color: AppColors.muted,
                             ),
@@ -115,19 +128,19 @@ class _HomePageState extends State<HomePage> {
                   ),
                   if (wide) ...[
                     _NavButton(
-                      label: 'Brincar',
+                      label: context.l10n.playTab,
                       icon: Icons.grid_view_rounded,
                       selected: _section == 0,
                       onTap: () => _selectSection(0),
                     ),
                     _NavButton(
-                      label: 'Bichinhos',
+                      label: context.l10n.animalsTab,
                       icon: Icons.pets_outlined,
                       selected: _section == 1,
                       onTap: () => _selectSection(1),
                     ),
                     _NavButton(
-                      label: 'Para responsáveis',
+                      label: context.l10n.parentsNavigation,
                       icon: Icons.tune_rounded,
                       selected: _section == 2,
                       onTap: () => _selectSection(2),
@@ -136,8 +149,8 @@ class _HomePageState extends State<HomePage> {
                   ],
                   IconButton.filledTonal(
                     tooltip: widget.settings.soundEnabled
-                        ? 'Desligar sons'
-                        : 'Ativar sons',
+                        ? context.l10n.disableSound
+                        : context.l10n.enableSound,
                     onPressed: () => unawaited(
                       widget.settings.update(
                         sound: !widget.settings.soundEnabled,
@@ -156,6 +169,7 @@ class _HomePageState extends State<HomePage> {
             Expanded(
               child: switch (_section) {
                 1 => AnimalExplorer(
+                  createAudio: widget.createAudio,
                   settings: widget.settings,
                   analytics: _analytics,
                 ),
@@ -165,9 +179,10 @@ class _HomePageState extends State<HomePage> {
                   analytics: widget.analytics,
                 ),
                 _ => _PlayHome(
+                  createGame: widget.createGame,
+                  games: gameCatalog(context.l10n),
                   onChangeProfile: _changeProfile,
                   settings: widget.settings,
-                  analytics: _analytics,
                   onAnimals: () => _selectSection(1),
                 ),
               },
@@ -180,18 +195,18 @@ class _HomePageState extends State<HomePage> {
           : NavigationBar(
               selectedIndex: _section,
               onDestinationSelected: _selectSection,
-              destinations: const [
+              destinations: [
                 NavigationDestination(
-                  icon: Icon(Icons.grid_view_rounded),
-                  label: 'Brincar',
+                  icon: const Icon(Icons.grid_view_rounded),
+                  label: context.l10n.playTab,
                 ),
                 NavigationDestination(
-                  icon: Icon(Icons.pets_outlined),
-                  label: 'Bichinhos',
+                  icon: const Icon(Icons.pets_outlined),
+                  label: context.l10n.animalsTab,
                 ),
                 NavigationDestination(
-                  icon: Icon(Icons.tune_rounded),
-                  label: 'Responsáveis',
+                  icon: const Icon(Icons.tune_rounded),
+                  label: context.l10n.parentsTab,
                 ),
               ],
             ),
@@ -227,15 +242,17 @@ class _NavButton extends StatelessWidget {
 
 class _PlayHome extends StatelessWidget {
   const _PlayHome({
+    required this.createGame,
+    required this.games,
     required this.settings,
     required this.onChangeProfile,
     required this.onAnimals,
-    required this.analytics,
   });
+  final List<GameDefinition> games;
+  final GameViewModel Function(GameDefinition) createGame;
   final AppSettings settings;
   final VoidCallback onChangeProfile;
   final VoidCallback onAnimals;
-  final UsageAnalytics analytics;
   @override
   Widget build(BuildContext context) => SingleChildScrollView(
     padding: const EdgeInsets.all(24),
@@ -246,14 +263,14 @@ class _PlayHome extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 12),
-            _Welcome(onAnimals: onAnimals),
+            WelcomeBanner(onAnimals: onAnimals),
             const SizedBox(height: 32),
             Text(
-              'O que vamos descobrir hoje?',
+              context.l10n.homeTitle,
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             const SizedBox(height: 8),
-            const Text('Escolha uma brincadeira. Vamos juntos, sem pressa.'),
+            Text(context.l10n.homeInstruction),
             const SizedBox(height: 8),
             SoftCard(
               color: AppColors.sage,
@@ -273,7 +290,9 @@ class _PlayHome extends StatelessWidget {
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
-                          settings.profileLabel(settings.activeProfile),
+                          settings
+                              .profile(settings.activeProfile)
+                              .displayName(context.l10n),
                           style: const TextStyle(
                             color: AppColors.primary,
                             fontWeight: FontWeight.w700,
@@ -287,7 +306,7 @@ class _PlayHome extends StatelessWidget {
                     child: TextButton.icon(
                       onPressed: onChangeProfile,
                       icon: const Icon(Icons.swap_horiz_rounded),
-                      label: const Text('Trocar'),
+                      label: Text(context.l10n.switchProfile),
                     ),
                   ),
                 ],
@@ -310,20 +329,27 @@ class _PlayHome extends StatelessWidget {
                     for (var i = 0; i < games.length; i++)
                       SizedBox(
                         width: width,
-                        child: _GameCard(
+                        child: GameCatalogCard(
                           game: games[i],
-                          onTap: () => Navigator.of(context).push<void>(
-                            MaterialPageRoute(
-                              settings: RouteSettings(
-                                name: gameScreenFor(games[i].kind.name).name,
+                          onTap: () {
+                            final viewModel = createGame(games[i]);
+                            unawaited(
+                              Navigator.of(context).push<void>(
+                                MaterialPageRoute(
+                                  settings: RouteSettings(
+                                    name: gameScreenFor(
+                                      games[i].kind.name,
+                                    ).name,
+                                  ),
+                                  builder: (_) => GamePage(
+                                    viewModel: viewModel,
+                                    game: games[i],
+                                    settings: settings,
+                                  ),
+                                ),
                               ),
-                              builder: (_) => GamePage(
-                                game: games[i],
-                                settings: settings,
-                                analytics: analytics,
-                              ),
-                            ),
-                          ),
+                            );
+                          },
                         ),
                       ),
                   ],
@@ -343,7 +369,7 @@ class _PlayHome extends StatelessWidget {
                   const SizedBox(width: 14),
                   Expanded(
                     child: Text(
-                      'Aqui, cada tentativa é uma descoberta. Você pode repetir, pedir uma dica ou fazer uma pausa.',
+                      context.l10n.homeReassurance,
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ),
@@ -355,13 +381,13 @@ class _PlayHome extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    'Uma turma para conhecer',
+                    context.l10n.homeAnimalsTitle,
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ),
                 TextButton(
                   onPressed: onAnimals,
-                  child: const Text('Ver bichinhos →'),
+                  child: Text(context.l10n.seeAnimals),
                 ),
               ],
             ),
@@ -396,294 +422,16 @@ class _PlayHome extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 28),
-            const Center(
+            Center(
               child: Text(
-                'Feito para explorar. Com espaço para ser você.',
+                context.l10n.homeFooter,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: AppColors.muted, fontSize: 13),
+                style: const TextStyle(color: AppColors.muted, fontSize: 13),
               ),
             ),
             const SizedBox(height: 12),
           ],
         ),
-      ),
-    ),
-  );
-}
-
-class _Welcome extends StatelessWidget {
-  const _Welcome({required this.onAnimals});
-  final VoidCallback onAnimals;
-  @override
-  Widget build(BuildContext context) => SoftCard(
-    color: AppColors.sage,
-    padding: EdgeInsets.zero,
-    child: LayoutBuilder(
-      builder: (context, constraints) {
-        final wide = constraints.maxWidth >= 650;
-        if (!wide) {
-          return Padding(
-            padding: const EdgeInsets.all(20),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'QUE BOM TER VOCÊ AQUI',
-                        style: TextStyle(
-                          fontSize: 9,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 1,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        'Vamos\nbrincar?',
-                        style: Theme.of(context).textTheme.headlineMedium,
-                      ),
-                      const SizedBox(height: 10),
-                      const Text('Uma descoberta\nde cada vez.'),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Image.asset(
-                    'assets/welcome.png',
-                    height: 150,
-                    fit: BoxFit.contain,
-                    excludeFromSemantics: true,
-                  ),
-                ),
-              ],
-            ),
-          );
-        }
-        final copy = Padding(
-          padding: EdgeInsets.all(wide ? 36 : 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.7),
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: const Text(
-                  'UM MUNDO DE PEQUENAS DESCOBERTAS',
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 1.2,
-                    color: AppColors.primary,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 18),
-              Text(
-                'Aprender é melhor\ncom novos amigos.',
-                style: Theme.of(context).textTheme.headlineLarge,
-              ),
-              const SizedBox(height: 12),
-              const Text(
-                'Bichinhos, brincadeiras e um mundo para explorar.\nTudo no seu ritmo.',
-                style: TextStyle(color: AppColors.muted, height: 1.6),
-              ),
-              const SizedBox(height: 24),
-              FilledButton.icon(
-                onPressed: onAnimals,
-                icon: const Icon(Icons.pets_rounded, size: 20),
-                label: const Text('Conhecer a turma'),
-              ),
-            ],
-          ),
-        );
-        final art = Image.asset(
-          'assets/welcome.png',
-          fit: BoxFit.cover,
-          height: wide ? 340 : 210,
-          width: double.infinity,
-          excludeFromSemantics: true,
-          errorBuilder: (_, _, _) => SizedBox(
-            height: 220,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                for (final a in animals.take(3))
-                  Flexible(
-                    child: AnimalPicture(
-                      path: a.image,
-                      label: a.name,
-                      size: 110,
-                      decorative: true,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        );
-        return wide
-            ? Row(
-                children: [
-                  Expanded(flex: 6, child: copy),
-                  Expanded(flex: 5, child: art),
-                ],
-              )
-            : Column(children: [copy, art]);
-      },
-    ),
-  );
-}
-
-class _GameCard extends StatelessWidget {
-  const _GameCard({required this.game, required this.onTap});
-  final GameDefinition game;
-  final VoidCallback onTap;
-  Color get _color => switch (game.kind) {
-    GameKind.memory => AppColors.blue,
-    GameKind.matching => AppColors.peach,
-    GameKind.letters => AppColors.lavender,
-    GameKind.counting => AppColors.blue,
-    GameKind.speaking => AppColors.yellow,
-    GameKind.clues => AppColors.sage,
-    GameKind.stories => AppColors.peach,
-    GameKind.drawing => AppColors.lavender,
-  };
-  IconData get _icon => switch (game.kind) {
-    GameKind.memory => Icons.style_rounded,
-    GameKind.matching => Icons.extension_rounded,
-    GameKind.letters => Icons.abc_rounded,
-    GameKind.counting => Icons.looks_3_outlined,
-    GameKind.speaking => Icons.record_voice_over_rounded,
-    GameKind.clues => Icons.search_rounded,
-    GameKind.stories => Icons.menu_book_rounded,
-    GameKind.drawing => Icons.draw_outlined,
-  };
-  @override
-  Widget build(BuildContext context) => Semantics(
-    button: true,
-    label: 'Jogar ${game.title}',
-    onTap: onTap,
-    excludeSemantics: true,
-    child: SoftCard(
-      onTap: onTap,
-      padding: const EdgeInsets.all(18),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: 132,
-            decoration: BoxDecoration(
-              color: _color,
-              borderRadius: BorderRadius.circular(18),
-            ),
-            child: Center(
-              child:
-                  game.kind == GameKind.memory ||
-                      game.kind == GameKind.clues ||
-                      game.kind == GameKind.stories ||
-                      game.kind == GameKind.drawing
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        AnimalPicture(
-                          path: animals[1].image,
-                          label: '',
-                          size: 76,
-                          decorative: true,
-                        ),
-                        Icon(_icon, size: 42, color: AppColors.primary),
-                      ],
-                    )
-                  : game.kind == GameKind.letters
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        AnimalPicture(
-                          path: animals[1].image,
-                          label: 'Gato',
-                          size: 80,
-                          decorative: true,
-                        ),
-                        const Text(
-                          'G',
-                          style: TextStyle(
-                            fontSize: 48,
-                            fontWeight: FontWeight.w800,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                      ],
-                    )
-                  : game.kind == GameKind.counting
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        for (var n = 0; n < 3; n++)
-                          AnimalPicture(
-                            path: animals[0].image,
-                            label: 'Cachorro',
-                            size: 52,
-                            decorative: true,
-                          ),
-                      ],
-                    )
-                  : AnimalPicture(
-                      path:
-                          animals[game.kind == GameKind.matching ? 2 : 3].image,
-                      label: '',
-                      size: 112,
-                      decorative: true,
-                    ),
-            ),
-          ),
-          const SizedBox(height: 18),
-          Row(
-            children: [
-              Icon(_icon, size: 18, color: AppColors.primary),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Text(
-                  game.skill,
-                  style: const TextStyle(
-                    color: AppColors.primary,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text(game.title, style: Theme.of(context).textTheme.titleLarge),
-          const SizedBox(height: 6),
-          Text(game.subtitle),
-          const SizedBox(height: 20),
-          const Row(
-            children: [
-              Text(
-                'Vamos brincar',
-                style: TextStyle(
-                  color: AppColors.primary,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              Spacer(),
-              Icon(
-                Icons.arrow_forward_rounded,
-                color: AppColors.primary,
-                size: 22,
-              ),
-            ],
-          ),
-        ],
       ),
     ),
   );

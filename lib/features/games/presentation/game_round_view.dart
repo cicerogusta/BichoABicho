@@ -1,13 +1,17 @@
 import 'dart:async';
+
+import 'package:bicho_a_bicho/l10n/localization.dart';
 import 'package:flutter/material.dart';
+
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/soft_card.dart';
-import 'widgets/animal_celebration.dart';
-import 'widgets/story_prompt.dart';
 import '../../settings/presentation/app_settings.dart';
 import '../domain/game_definition.dart';
 import '../domain/game_session.dart';
+import 'game_media_message_text.dart';
 import 'game_view_model.dart';
+import 'widgets/animal_celebration.dart';
+import 'widgets/story_prompt.dart';
 
 class GameRoundView extends StatelessWidget {
   const GameRoundView({
@@ -38,7 +42,10 @@ class GameRoundView extends StatelessWidget {
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                'Descoberta ${model.index + 1} de ${model.session.rounds.length}',
+                context.l10n.roundProgress(
+                  model.index + 1,
+                  model.session.rounds.length,
+                ),
                 style: const TextStyle(
                   color: AppColors.primary,
                   fontWeight: FontWeight.w700,
@@ -54,7 +61,7 @@ class GameRoundView extends StatelessWidget {
             value:
                 (model.index + (correct ? 1 : 0)) / model.session.rounds.length,
             minHeight: 8,
-            semanticsLabel: 'Progresso da brincadeira',
+            semanticsLabel: context.l10n.gameProgress,
             backgroundColor: AppColors.sage,
           ),
         ),
@@ -88,7 +95,7 @@ class GameRoundView extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      'A pista é:',
+                      context.l10n.clueHeading,
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(height: 8),
@@ -117,7 +124,9 @@ class GameRoundView extends StatelessWidget {
                       : '_${round.animal.name.substring(1).toUpperCase()}',
                   semanticsLabel: correct
                       ? round.animal.name
-                      : 'Nome sem a primeira letra: ${round.animal.name.substring(1)}',
+                      : context.l10n.nameWithoutInitial(
+                          round.animal.name.substring(1),
+                        ),
                   style: const TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.w800,
@@ -134,7 +143,7 @@ class GameRoundView extends StatelessWidget {
                       ? null
                       : () => unawaited(model.playSound(settings.soundEnabled)),
                   icon: const Icon(Icons.volume_up_outlined),
-                  label: const Text('Ouvir o bichinho'),
+                  label: Text(context.l10n.hearAnimal),
                 ),
               ],
             ],
@@ -151,10 +160,14 @@ class GameRoundView extends StatelessWidget {
             icon: Icon(
               model.listening ? Icons.stop_rounded : Icons.mic_none_rounded,
             ),
-            label: Text(model.listening ? 'Parar de ouvir' : 'Quero falar'),
+            label: Text(
+              model.listening
+                  ? context.l10n.stopListening
+                  : context.l10n.requestSpeech,
+            ),
           ),
           const SizedBox(height: 12),
-          const Text('Ou escolha uma imagem:', textAlign: TextAlign.center),
+          Text(context.l10n.chooseImage, textAlign: TextAlign.center),
           const SizedBox(height: 12),
         ],
         LayoutBuilder(
@@ -194,53 +207,61 @@ class GameRoundView extends StatelessWidget {
               if (model.mediaMessage != null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 12),
-                  child: Text(model.mediaMessage!, textAlign: TextAlign.center),
+                  child: Text(
+                    model.mediaMessage!.resolve(context),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               if (correct)
                 SoftCard(
                   color: AppColors.sage,
                   child: Column(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.check_circle_outline_rounded,
                         size: 36,
                         color: AppColors.primary,
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Você descobriu!',
+                        context.l10n.discoveryCorrect,
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                       const SizedBox(height: 6),
                       Text(
                         round.story?.answerSentence ??
                             (game.kind == GameKind.counting
-                                ? 'Isso! Temos ${round.quantity} bichinhos.'
-                                : 'É ${round.animal.name.toLowerCase()}!'),
+                                ? context.l10n.countingCorrect(round.quantity)
+                                : context.l10n.animalCorrect(
+                                    round.animal.name.toLowerCase(),
+                                  )),
                         textAlign: TextAlign.center,
                       ),
                     ],
                   ),
                 )
               else if (model.feedback == RoundFeedback.retry)
-                const Text(
-                  'Vamos observar mais um pouquinho? Tente outra opção.',
-                  textAlign: TextAlign.center,
-                ),
+                Text(context.l10n.retryChoice, textAlign: TextAlign.center),
               if (model.hintVisible && !correct)
                 Padding(
                   padding: const EdgeInsets.only(top: 12),
                   child: Text(
                     switch (game.kind) {
-                      GameKind.letters =>
-                        '${round.animal.name} começa com ${round.animal.initial}.',
-                      GameKind.counting =>
-                        'Conte tocando em cada bichinho: ${List.generate(round.quantity, (i) => i + 1).join(', ')}.',
+                      GameKind.letters => context.l10n.letterHint(
+                        round.animal.name,
+                        round.animal.initial,
+                      ),
+                      GameKind.counting => context.l10n.countingHint(
+                        List.generate(round.quantity, (i) => i + 1).join(', '),
+                      ),
                       GameKind.stories => round.story!.answerSentence,
-                      GameKind.clues =>
-                        'A pista fala do ${round.animal.name.toLowerCase()}. Compare as imagens.',
-                      _ =>
-                        'Procure o ${round.animal.name.toLowerCase()}. ${round.animal.clue}',
+                      GameKind.clues => context.l10n.clueHint(
+                        round.animal.name.toLowerCase(),
+                      ),
+                      _ => context.l10n.matchingHint(
+                        round.animal.name.toLowerCase(),
+                        round.animal.clue,
+                      ),
                     },
                     textAlign: TextAlign.center,
                     style: const TextStyle(
@@ -259,8 +280,8 @@ class GameRoundView extends StatelessWidget {
             icon: const Icon(Icons.arrow_forward_rounded),
             label: Text(
               model.index == model.session.rounds.length - 1
-                  ? 'Concluir brincadeira'
-                  : 'Próxima descoberta',
+                  ? context.l10n.finishGame
+                  : context.l10n.nextRound,
             ),
           )
         else
@@ -272,11 +293,11 @@ class GameRoundView extends StatelessWidget {
               TextButton.icon(
                 onPressed: model.showHint,
                 icon: const Icon(Icons.lightbulb_outline_rounded),
-                label: const Text('Quero uma dica'),
+                label: Text(context.l10n.requestHint),
               ),
               TextButton(
                 onPressed: onAdvance,
-                child: const Text('Pular por enquanto'),
+                child: Text(context.l10n.skipRound),
               ),
             ],
           ),
@@ -300,8 +321,15 @@ class _CountingGroup extends StatelessWidget {
           for (var i = 0; i < model.round.quantity; i++)
             Semantics(
               button: true,
-              label:
-                  '${model.round.animal.name} ${i + 1}${model.countedAnimals.contains(i) ? ', já contado' : ', tocar para contar'}',
+              label: model.countedAnimals.contains(i)
+                  ? context.l10n.animalAlreadyCounted(
+                      model.round.animal.name,
+                      i + 1,
+                    )
+                  : context.l10n.animalTapToCount(
+                      model.round.animal.name,
+                      i + 1,
+                    ),
               excludeSemantics: true,
               onTap: () => model.countAnimal(i),
               child: SoftCard(
@@ -335,8 +363,8 @@ class _CountingGroup extends StatelessWidget {
         liveRegion: true,
         child: Text(
           model.countedAnimals.isEmpty
-              ? 'Você pode tocar em cada bichinho para contar.'
-              : 'Já contamos ${model.countedAnimals.length}.',
+              ? context.l10n.countingInstruction
+              : context.l10n.countingProgress(model.countedAnimals.length),
           textAlign: TextAlign.center,
         ),
       ),
@@ -362,12 +390,11 @@ class _ChoiceTile extends StatelessWidget {
     button: true,
     enabled: !disabled,
     onTap: disabled ? null : onTap,
-    label:
-        '${choice.label}${correct
-            ? ', resposta descoberta'
-            : tried
-            ? ', tente outra opção'
-            : ''}',
+    label: correct
+        ? context.l10n.choiceCorrectLabel(choice.label)
+        : tried
+        ? context.l10n.choiceRetryLabel(choice.label)
+        : choice.label,
     excludeSemantics: true,
     child: SoftCard(
       color: correct ? AppColors.sage : Colors.white,

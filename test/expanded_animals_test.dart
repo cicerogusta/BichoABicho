@@ -5,14 +5,15 @@ import 'dart:typed_data';
 import 'package:bicho_a_bicho/core/analytics/usage_analytics.dart';
 import 'package:bicho_a_bicho/core/theme/app_theme.dart';
 import 'package:bicho_a_bicho/core/widgets/soft_card.dart';
-import 'package:bicho_a_bicho/features/animals/domain/animal.dart';
+import 'package:bicho_a_bicho/features/animals/domain/animal_catalog.dart';
 import 'package:bicho_a_bicho/features/animals/presentation/animal_explorer.dart';
 import 'package:bicho_a_bicho/features/games/domain/drawing_template.dart';
 import 'package:bicho_a_bicho/features/games/domain/game_definition.dart';
 import 'package:bicho_a_bicho/features/games/domain/game_session.dart';
 import 'package:bicho_a_bicho/features/games/presentation/game_view_model.dart';
-import 'package:bicho_a_bicho/features/settings/presentation/app_settings.dart';
 import 'package:bicho_a_bicho/features/opening/presentation/opening_page.dart';
+import 'package:bicho_a_bicho/features/settings/presentation/app_settings.dart';
+import 'package:bicho_a_bicho/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -29,6 +30,8 @@ void main() {
     var completed = false;
     await tester.pumpWidget(
       MaterialApp(
+        supportedLocales: AppLocalizations.supportedLocales,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
         theme: AppTheme.create(),
         home: OpeningPage(onComplete: () => completed = true),
       ),
@@ -154,9 +157,11 @@ void main() {
     final audio = FakeAudio();
     await tester.pumpWidget(
       MaterialApp(
+        supportedLocales: AppLocalizations.supportedLocales,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
         theme: AppTheme.create(),
         home: Scaffold(
-          body: AnimalExplorer(settings: settings, audio: audio),
+          body: AnimalExplorer(settings: settings, createAudio: () => audio),
         ),
       ),
     );

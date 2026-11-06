@@ -1,8 +1,11 @@
 import 'dart:async';
+
+import 'package:bicho_a_bicho/features/animals/domain/animal_catalog.dart';
+import 'package:bicho_a_bicho/l10n/localization.dart';
 import 'package:flutter/material.dart';
+
 import '../../../core/widgets/soft_card.dart';
 import '../../settings/presentation/app_settings.dart';
-import '../../animals/domain/animal.dart';
 import 'profile_appearance.dart';
 
 class ProfileNamePage extends StatefulWidget {
@@ -31,13 +34,13 @@ class _ProfileNamePageState extends State<ProfileNamePage> {
         : widget.settings.profile(widget.profile!).name,
   );
   bool _saving = false;
-  String? _error;
+  bool _saveFailed = false;
 
   Future<void> _save({bool withoutName = false}) async {
     if (_saving || (!withoutName && !_form.currentState!.validate())) return;
     setState(() {
       _saving = true;
-      _error = null;
+      _saveFailed = false;
     });
     final name = withoutName ? '' : _name.text;
     if (_savedProfile == null) {
@@ -56,7 +59,7 @@ class _ProfileNamePageState extends State<ProfileNamePage> {
     if (widget.settings.storageFailed) {
       setState(() {
         _saving = false;
-        _error = 'Não foi possível salvar neste aparelho. Tente novamente.';
+        _saveFailed = true;
       });
       return;
     }
@@ -76,7 +79,11 @@ class _ProfileNamePageState extends State<ProfileNamePage> {
       canPop: !_saving,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(widget.profile == null ? 'Novo cartão' : 'Seu cartão'),
+          title: Text(
+            widget.profile == null
+                ? context.l10n.newProfile
+                : context.l10n.profileTitle,
+          ),
         ),
         body: SafeArea(
           child: SingleChildScrollView(
@@ -100,7 +107,9 @@ class _ProfileNamePageState extends State<ProfileNamePage> {
                             ),
                             const SizedBox(height: 12),
                             Text(
-                              'Seu cartão do ${animal.name.toLowerCase()}',
+                              context.l10n.profileAnimalTitle(
+                                animal.name.toLowerCase(),
+                              ),
                               textAlign: TextAlign.center,
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
@@ -109,7 +118,7 @@ class _ProfileNamePageState extends State<ProfileNamePage> {
                       ),
                       const SizedBox(height: 24),
                       Text(
-                        'Escolha seu bichinho',
+                        context.l10n.chooseAnimal,
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       const SizedBox(height: 8),
@@ -136,13 +145,11 @@ class _ProfileNamePageState extends State<ProfileNamePage> {
                       ),
                       const SizedBox(height: 24),
                       Text(
-                        'Como vamos chamar você?',
+                        context.l10n.profileNameQuestion,
                         style: Theme.of(context).textTheme.headlineMedium,
                       ),
                       const SizedBox(height: 12),
-                      const Text(
-                        'Um responsável pode ajudar a escrever. O nome aparecerá neste cartão e no acompanhamento das brincadeiras.',
-                      ),
+                      Text(context.l10n.profileNameHelp),
                       const SizedBox(height: 24),
                       TextFormField(
                         controller: _name,
@@ -151,20 +158,21 @@ class _ProfileNamePageState extends State<ProfileNamePage> {
                         autocorrect: false,
                         textCapitalization: TextCapitalization.words,
                         textInputAction: TextInputAction.done,
-                        decoration: const InputDecoration(
-                          labelText: 'Nome ou apelido (opcional)',
-                          hintText: 'Ex.: Ana',
-                          helperText: 'Pode ser só o primeiro nome.',
+                        decoration: InputDecoration(
+                          labelText: context.l10n.profileNameLabel,
+                          hintText: context.l10n.profileNameExample,
+                          helperText: context.l10n.profileNameHint,
                         ),
                         onFieldSubmitted: (_) => unawaited(_save()),
                       ),
                       const SizedBox(height: 16),
-                      const Text(
-                        'Salvo somente neste aparelho. Não é necessário criar uma conta.',
-                      ),
-                      if (_error != null) ...[
+                      Text(context.l10n.profileLocalNotice),
+                      if (_saveFailed) ...[
                         const SizedBox(height: 16),
-                        Semantics(liveRegion: true, child: Text(_error!)),
+                        Semantics(
+                          liveRegion: true,
+                          child: Text(context.l10n.profileSaveFailed),
+                        ),
                       ],
                       const SizedBox(height: 24),
                       FilledButton.icon(
@@ -180,10 +188,10 @@ class _ProfileNamePageState extends State<ProfileNamePage> {
                             : const Icon(Icons.check_rounded),
                         label: Text(
                           _saving
-                              ? 'Salvando...'
+                              ? context.l10n.saving
                               : widget.enterAfterSave
-                              ? 'Salvar e brincar'
-                              : 'Salvar cartão',
+                              ? context.l10n.saveAndPlay
+                              : context.l10n.saveProfile,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -193,8 +201,8 @@ class _ProfileNamePageState extends State<ProfileNamePage> {
                             : () => unawaited(_save(withoutName: true)),
                         child: Text(
                           widget.enterAfterSave
-                              ? 'Continuar sem nome'
-                              : 'Usar só o bichinho',
+                              ? context.l10n.continueWithoutName
+                              : context.l10n.useAnimalOnly,
                         ),
                       ),
                     ],

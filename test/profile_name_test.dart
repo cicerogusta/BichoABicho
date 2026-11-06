@@ -1,15 +1,15 @@
-import 'dart:io';
-import 'dart:ui' as ui;
 import 'package:bicho_a_bicho/app/app.dart';
 import 'package:bicho_a_bicho/core/widgets/soft_card.dart';
 import 'package:bicho_a_bicho/features/progress/presentation/profile_name_page.dart';
 import 'package:bicho_a_bicho/features/settings/presentation/app_settings.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'support/fakes.dart';
+
+import 'support/capture_preview.dart';
 import 'support/fake_analytics.dart';
+import 'support/fakes.dart';
+import 'support/localization.dart';
 
 Future<void> openPicker(
   WidgetTester tester,
@@ -48,8 +48,8 @@ void main() {
       await restored.load();
       expect(restored.profileIsConfigured(0), isTrue);
       expect(restored.profileIsConfigured(1), isTrue);
-      expect(restored.profileLabel(0), 'Ana');
-      expect(restored.profileLabel(1), 'Meu Gato');
+      expect(profileLabel(restored, 0), 'Ana');
+      expect(profileLabel(restored, 1), 'Meu Gato');
       expect(analytics.events, isEmpty);
       final legacy = AppSettings(
         MemorySettingsRepository()..values = {'profile_label_0': 'Bia'},
@@ -93,29 +93,14 @@ void main() {
         'assets/animal_dog.png',
       );
       if (const bool.fromEnvironment('CAPTURE_PREVIEWS')) {
-        await tester.runAsync(() async {
-          for (final picture in tester.widgetList<Image>(find.byType(Image))) {
-            await precacheImage(picture.image, key.currentContext!);
-          }
-        });
-        await tester.pumpAndSettle();
-        await tester.runAsync(() async {
-          final boundary =
-              key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
-          final image = await boundary.toImage();
-          final data = await image.toByteData(format: ui.ImageByteFormat.png);
-          await File(
-            'docs/previews/profile_name.png',
-          ).writeAsBytes(data!.buffer.asUint8List());
-          image.dispose();
-        });
+        await capturePreview(tester, key, 'profile_name');
       }
       await tester.enterText(find.byType(TextFormField), 'Ana');
       await tester.ensureVisible(find.text('Salvar e brincar'));
       await tester.tap(find.text('Salvar e brincar'));
       await tester.pumpAndSettle();
       expect(find.text('O que vamos descobrir hoje?'), findsOneWidget);
-      expect(settings.profileLabel(0), 'Ana');
+      expect(profileLabel(settings, 0), 'Ana');
       await tester.pumpWidget(const SizedBox());
       final restored = AppSettings(repository);
       await restored.load();
@@ -150,7 +135,7 @@ void main() {
     await tester.tap(find.text('Salvar e brincar'));
     await tester.pumpAndSettle();
     expect(settings.activeProfile, 1);
-    expect(settings.profileLabel(1), 'Lu');
+    expect(profileLabel(settings, 1), 'Lu');
     expect(settings.profileIsConfigured(0), isFalse);
     await tester.pumpWidget(const SizedBox());
     settings.dispose();

@@ -1,14 +1,17 @@
 import 'dart:async';
+
+import 'package:bicho_a_bicho/l10n/localization.dart';
 import 'package:flutter/material.dart';
-import '../../../core/theme/app_theme.dart';
-import '../../../core/widgets/soft_card.dart';
-import '../../games/domain/game_definition.dart';
-import 'app_settings.dart';
-import 'analytics_settings_card.dart';
+
 import '../../../core/analytics/analytics_controller.dart';
 import '../../../core/analytics/usage_analytics.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/soft_card.dart';
+import '../../games/presentation/game_catalog.dart';
 import '../../progress/presentation/learning_report.dart';
 import '../../progress/presentation/profile_settings_card.dart';
+import 'analytics_settings_card.dart';
+import 'app_settings.dart';
 
 class ParentPage extends StatelessWidget {
   const ParentPage({
@@ -31,13 +34,11 @@ class ParentPage extends StatelessWidget {
           children: [
             const SizedBox(height: 16),
             Text(
-              'Cada criança tem seu ritmo.',
+              context.l10n.parentsTitle,
               style: Theme.of(context).textTheme.headlineLarge,
             ),
             const SizedBox(height: 12),
-            const Text(
-              'Ajuste a experiência junto com a criança. Observe o conforto, os interesses e as formas de comunicação que ela prefere.',
-            ),
+            Text(context.l10n.parentsDescription),
             const SizedBox(height: 24),
             ProfileSettingsCard(settings: settings),
             const SizedBox(height: 24),
@@ -51,19 +52,15 @@ class ParentPage extends StatelessWidget {
                     value: settings.soundEnabled,
                     onChanged: (value) =>
                         unawaited(settings.update(sound: value)),
-                    title: const Text('Sons e comemorações'),
-                    subtitle: const Text(
-                      'Sons ao tocar e uma música curta ao acertar. Sem música de fundo.',
-                    ),
+                    title: Text(context.l10n.soundSetting),
+                    subtitle: Text(context.l10n.soundSettingDescription),
                   ),
                   SwitchListTile.adaptive(
                     value: settings.calmMode,
                     onChanged: (value) =>
                         unawaited(settings.update(calm: value)),
-                    title: const Text('Movimento reduzido'),
-                    subtitle: const Text(
-                      'Reduz transições. A preferência do sistema também é respeitada.',
-                    ),
+                    title: Text(context.l10n.reducedMotionSetting),
+                    subtitle: Text(context.l10n.reducedMotionDescription),
                   ),
                   const Divider(),
                   Padding(
@@ -72,7 +69,7 @@ class ParentPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Opções por descoberta',
+                          context.l10n.choicesSetting,
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                         const SizedBox(height: 12),
@@ -81,7 +78,7 @@ class ParentPage extends StatelessWidget {
                           children: [
                             for (final n in [2, 3])
                               ChoiceChip(
-                                label: Text('$n opções'),
+                                label: Text(context.l10n.choiceCount(n)),
                                 selected: settings.choiceCount == n,
                                 onSelected: (_) =>
                                     unawaited(settings.update(choices: n)),
@@ -90,7 +87,7 @@ class ParentPage extends StatelessWidget {
                         ),
                         const SizedBox(height: 20),
                         Text(
-                          'Tamanho da brincadeira',
+                          context.l10n.roundsSetting,
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                         const SizedBox(height: 12),
@@ -99,7 +96,7 @@ class ParentPage extends StatelessWidget {
                           children: [
                             for (final n in [4, 6])
                               ChoiceChip(
-                                label: Text('$n descobertas'),
+                                label: Text(context.l10n.sessionRoundCount(n)),
                                 selected: settings.rounds == n,
                                 onSelected: (_) => unawaited(
                                   settings.update(sessionRounds: n),
@@ -108,9 +105,7 @@ class ParentPage extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 12),
-                        const Text(
-                          'As mudanças valem para a próxima brincadeira.',
-                        ),
+                        Text(context.l10n.settingsNextGame),
                       ],
                     ),
                   ),
@@ -118,26 +113,22 @@ class ParentPage extends StatelessWidget {
               ),
             ),
             if (settings.storageFailed)
-              const Padding(
-                padding: EdgeInsets.all(16),
-                child: Text(
-                  'Não foi possível salvar neste dispositivo. As mudanças atuais continuam disponíveis enquanto o app estiver aberto.',
-                ),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Text(context.l10n.settingsStorageFailure),
               ),
             const SizedBox(height: 24),
             Text(
-              'Nosso caminho de descobertas',
+              context.l10n.completedGamesTitle,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Brincadeiras concluídas neste dispositivo. Este registro não mede desenvolvimento nem desempenho.',
-            ),
+            Text(context.l10n.completedGamesDescription),
             const SizedBox(height: 16),
             SoftCard(
               child: Column(
                 children: [
-                  for (final game in games)
+                  for (final game in gameCatalog(context.l10n))
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Row(
@@ -166,7 +157,7 @@ class ParentPage extends StatelessWidget {
               alignment: Alignment.centerRight,
               child: TextButton(
                 onPressed: () => _reset(context),
-                child: const Text('Apagar histórico local'),
+                child: Text(context.l10n.clearLocalHistory),
               ),
             ),
             const SizedBox(height: 16),
@@ -176,35 +167,25 @@ class ParentPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Brincar com intenção',
+                    context.l10n.educationalPurpose,
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(height: 12),
-                  const Text(
-                    'Associação, exploração de sons, expressão e pequenas quantidades dialogam com os campos de experiência da Educação Infantil na BNCC. As letras são uma exploração lúdica, sem exigir alfabetização.',
-                  ),
+                  Text(context.l10n.educationalAlignment),
                   const SizedBox(height: 12),
-                  const Text(
-                    'Não há cronômetro, perda de pontos ou exigência de fala. Ofereça ajuda sem pressionar. Respeite pausas e o desejo de parar.',
-                  ),
+                  Text(context.l10n.educationalReassurance),
                   const SizedBox(height: 12),
-                  const Text(
-                    'Para brincar de Detetive dos bichos, leia a pista e compare as imagens junto com a criança. Em Histórias da turma, leia as duas cenas e a pergunta; a história fica disponível para consultar. A criança pode tocar ou indicar uma imagem para você selecionar. Não é preciso saber ler.',
-                  ),
+                  Text(context.l10n.sharedReadingGuidance),
                   const SizedBox(height: 12),
-                  const Text(
-                    'Essas duas propostas foram adaptadas de atividades de adivinhação e contação com figuras reunidas pela Secretaria de Educação de Santa Catarina. As narrativas e ilustrações do app são próprias. Experimente também com livros e brinquedos fora da tela, respeitando os interesses da criança.',
-                  ),
+                  Text(context.l10n.educationalSources),
                   const SizedBox(height: 12),
-                  const Text(
-                    'O app é um recurso educativo complementar. A adequação das atividades deve ser avaliada com a família e a equipe pedagógica. Não faz avaliação clínica.',
-                  ),
+                  Text(context.l10n.educationalDisclaimer),
                 ],
               ),
             ),
             const SizedBox(height: 24),
             Text(
-              'Privacidade e conta',
+              context.l10n.privacyAndAccount,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             if (analytics != null) ...[
@@ -212,9 +193,7 @@ class ParentPage extends StatelessWidget {
               AnalyticsSettingsCard(analytics: analytics!),
             ],
             const SizedBox(height: 12),
-            const Text(
-              'Os jogos não precisam de conta ou internet. O histórico fica neste dispositivo. O compartilhamento opcional de eventos de uso está descrito nos ajustes de dados acima. Não é necessário informar nome ou idade da criança. Os apelidos opcionais dos cartões ficam neste aparelho.\n\nO microfone só é solicitado no botão “Quero falar”. O serviço de reconhecimento do sistema pode enviar áudio ao provedor do dispositivo e precisar de internet. O app não grava nem armazena esse áudio. Prefira responder por toque se não desejar usar o microfone.',
-            ),
+            Text(context.l10n.privacyDescription),
             const SizedBox(height: 16),
             OutlinedButton.icon(
               onPressed: () => Navigator.of(context).push<void>(
@@ -224,16 +203,16 @@ class ParentPage extends StatelessWidget {
                 ),
               ),
               icon: const Icon(Icons.person_outline_rounded),
-              label: const Text('Conta opcional do responsável'),
+              label: Text(context.l10n.optionalAccount),
             ),
             const SizedBox(height: 28),
             TextButton.icon(
               onPressed: () => showLicensePage(
                 context: context,
-                applicationName: 'Bicho a Bicho',
+                applicationName: context.l10n.appTitle,
               ),
               icon: const Icon(Icons.info_outline),
-              label: const Text('Licenças e créditos'),
+              label: Text(context.l10n.licenses),
             ),
           ],
         ),
@@ -246,18 +225,16 @@ class ParentPage extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         scrollable: true,
-        title: const Text('Apagar o histórico?'),
-        content: const Text(
-          'As contagens de brincadeiras e o acompanhamento de todos os perfis deste dispositivo serão apagados. Os ajustes serão mantidos.',
-        ),
+        title: Text(context.l10n.resetHistoryTitle),
+        content: Text(context.l10n.resetHistoryDescription),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Manter histórico'),
+            child: Text(context.l10n.keepHistory),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Apagar'),
+            child: Text(context.l10n.delete),
           ),
         ],
       ),

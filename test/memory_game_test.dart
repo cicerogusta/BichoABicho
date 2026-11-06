@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:bicho_a_bicho/app/app.dart';
 import 'package:bicho_a_bicho/core/analytics/usage_analytics.dart';
-import 'package:bicho_a_bicho/features/animals/domain/animal.dart';
+import 'package:bicho_a_bicho/features/animals/domain/animal_catalog.dart';
 import 'package:bicho_a_bicho/features/games/domain/game_definition.dart';
 import 'package:bicho_a_bicho/features/games/domain/game_session.dart';
 import 'package:bicho_a_bicho/features/games/domain/memory_board.dart';
@@ -11,11 +11,13 @@ import 'package:bicho_a_bicho/features/games/presentation/game_view_model.dart';
 import 'package:bicho_a_bicho/features/games/presentation/memory_controller.dart';
 import 'package:bicho_a_bicho/features/progress/domain/learning_history.dart';
 import 'package:bicho_a_bicho/features/settings/presentation/app_settings.dart';
+import 'package:bicho_a_bicho/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'support/fake_analytics.dart';
 import 'support/fakes.dart';
+import 'support/localization.dart';
 import 'support/profile_navigation.dart';
 
 Future<void> deal(WidgetTester tester, MemoryController controller) async {
@@ -164,6 +166,8 @@ void main() {
         );
         await tester.pumpWidget(
           MaterialApp(
+            supportedLocales: AppLocalizations.supportedLocales,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
             builder: (context, child) => MediaQuery(
               data: MediaQuery.of(context).copyWith(
                 disableAnimations: reduced,

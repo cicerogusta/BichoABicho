@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'dart:typed_data';
+
 import 'package:bicho_a_bicho/features/games/domain/game_definition.dart';
 import 'package:bicho_a_bicho/features/games/domain/game_session.dart';
+import 'package:bicho_a_bicho/features/games/presentation/game_media_message.dart';
 import 'package:bicho_a_bicho/features/games/presentation/game_view_model.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+
 import 'support/fakes.dart';
 
 class DelayedStopAudio extends FakeAudio {
@@ -107,7 +110,7 @@ void main() {
       model.answer(model.round.answer);
       await Future<void>.delayed(Duration.zero);
       expect(model.feedback, RoundFeedback.correct);
-      expect(model.mediaMessage, contains('música não pôde'));
+      expect(model.mediaMessage, GameMediaMessage.celebrationUnavailable);
       await model.next();
       expect(model.index, 1);
       model.dispose();

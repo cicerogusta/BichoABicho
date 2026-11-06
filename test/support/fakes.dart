@@ -1,6 +1,8 @@
 import 'dart:async';
+
 import 'package:bicho_a_bicho/core/services/animal_audio.dart';
 import 'package:bicho_a_bicho/core/services/animal_speech.dart';
+import 'package:bicho_a_bicho/features/account/domain/account_repository.dart';
 import 'package:bicho_a_bicho/features/settings/domain/settings_repository.dart';
 
 class MemorySettingsRepository implements SettingsRepository {
@@ -67,5 +69,30 @@ class FakeSpeech implements AnimalSpeech {
   @override
   Future<void> cancel() async {
     cancels++;
+  }
+}
+
+class FakeAccountRepository implements AccountRepository {
+  String? name;
+  AccountFailure? failure;
+  int signIns = 0;
+  @override
+  Future<String?> currentName() async => name;
+  @override
+  Future<String> register(String name, String email, String password) async {
+    if (failure != null) throw failure!;
+    return this.name = name;
+  }
+
+  @override
+  Future<String> signIn(String email, String password) async {
+    signIns++;
+    if (failure != null) throw failure!;
+    return name = 'Responsável';
+  }
+
+  @override
+  Future<void> signOut() async {
+    name = null;
   }
 }

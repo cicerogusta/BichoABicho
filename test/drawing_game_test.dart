@@ -1,15 +1,17 @@
 import 'dart:math';
+
 import 'package:bicho_a_bicho/core/analytics/usage_analytics.dart';
+import 'package:bicho_a_bicho/features/games/domain/drawing_template.dart';
 import 'package:bicho_a_bicho/features/games/domain/game_definition.dart';
 import 'package:bicho_a_bicho/features/games/domain/game_session.dart';
-import 'package:bicho_a_bicho/features/games/domain/drawing_template.dart';
 import 'package:bicho_a_bicho/features/games/presentation/drawing_controller.dart';
 import 'package:bicho_a_bicho/features/games/presentation/game_view_model.dart';
 import 'package:bicho_a_bicho/features/progress/domain/learning_history.dart';
 import 'package:bicho_a_bicho/features/settings/presentation/app_settings.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'support/fakes.dart';
+
 import 'support/fake_analytics.dart';
+import 'support/fakes.dart';
 
 void trace(DrawingController drawing, List<Point<double>> points) {
   drawing.begin(points.first);

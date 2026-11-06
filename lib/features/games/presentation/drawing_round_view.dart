@@ -1,10 +1,14 @@
 import 'dart:math';
+
+import 'package:bicho_a_bicho/l10n/localization.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/soft_card.dart';
 import '../domain/drawing_template.dart';
 import 'drawing_controller.dart';
+import 'game_media_message_text.dart';
 import 'game_view_model.dart';
 import 'widgets/animal_celebration.dart';
 
@@ -27,7 +31,10 @@ class DrawingRoundView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'Descoberta ${model.index + 1} de ${model.session.rounds.length}',
+          context.l10n.roundProgress(
+            model.index + 1,
+            model.session.rounds.length,
+          ),
           style: const TextStyle(
             color: AppColors.primary,
             fontWeight: FontWeight.w700,
@@ -35,15 +42,12 @@ class DrawingRoundView extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         Text(
-          'Vamos desenhar ${animal.name.toLowerCase()}?',
+          context.l10n.drawingPrompt(animal.name.toLowerCase()),
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.headlineMedium,
         ),
         const SizedBox(height: 8),
-        const Text(
-          'Observe o modelo. Desenhe o contorno com o dedo e toque em “Conferir desenho”.',
-          textAlign: TextAlign.center,
-        ),
+        Text(context.l10n.drawingInstruction, textAlign: TextAlign.center),
         const SizedBox(height: 16),
         SoftCard(
           color: AppColors.sage,
@@ -52,7 +56,9 @@ class DrawingRoundView extends StatelessWidget {
             children: [
               Semantics(
                 image: true,
-                label: 'Modelo do contorno de ${animal.name.toLowerCase()}',
+                label: context.l10n.drawingModelLabel(
+                  animal.name.toLowerCase(),
+                ),
                 child: SizedBox(
                   width: 100,
                   height: 100,
@@ -71,9 +77,7 @@ class DrawingRoundView extends StatelessWidget {
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     const SizedBox(height: 8),
-                    const Text(
-                      'Um traço parecido já vale. Olhos e detalhes não são obrigatórios.',
-                    ),
+                    Text(context.l10n.drawingReassurance),
                   ],
                 ),
               ),
@@ -84,14 +88,11 @@ class DrawingRoundView extends StatelessWidget {
         if (correct) ...[
           AnimalCelebration(key: ValueKey(model.index), animal: animal),
           Text(
-            'Você descobriu!',
+            context.l10n.discoveryCorrect,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.titleLarge,
           ),
-          const Text(
-            'Seu desenho ficou parecido com o modelo!',
-            textAlign: TextAlign.center,
-          ),
+          Text(context.l10n.drawingCorrect, textAlign: TextAlign.center),
           const SizedBox(height: 16),
         ],
         Center(
@@ -100,8 +101,9 @@ class DrawingRoundView extends StatelessWidget {
             child: AspectRatio(
               aspectRatio: 1,
               child: Semantics(
-                label:
-                    'Área de desenho de ${animal.name.toLowerCase()}. Desenhe deslizando um dedo. Pode pedir ajuda ou pular.',
+                label: context.l10n.drawingCanvasLabel(
+                  animal.name.toLowerCase(),
+                ),
                 child: _DrawingCanvas(
                   template: template,
                   drawing: drawing,
@@ -125,12 +127,12 @@ class DrawingRoundView extends StatelessWidget {
                     OutlinedButton.icon(
                       onPressed: drawing.hasInk ? drawing.undo : null,
                       icon: const Icon(Icons.undo_rounded),
-                      label: const Text('Desfazer'),
+                      label: Text(context.l10n.undo),
                     ),
                     OutlinedButton.icon(
                       onPressed: drawing.hasInk ? drawing.clear : null,
                       icon: const Icon(Icons.delete_outline_rounded),
-                      label: const Text('Limpar'),
+                      label: Text(context.l10n.clear),
                     ),
                     OutlinedButton.icon(
                       onPressed: () {
@@ -139,20 +141,19 @@ class DrawingRoundView extends StatelessWidget {
                       },
                       icon: const Icon(Icons.lightbulb_outline_rounded),
                       label: Text(
-                        drawing.guide ? 'Ocultar contorno' : 'Quero uma dica',
+                        drawing.guide
+                            ? context.l10n.hideOutline
+                            : context.l10n.requestHint,
                       ),
                     ),
                   ],
                 ),
-                if (drawing.full)
-                  const Text(
-                    'O quadro está cheio de traços. Você pode desfazer ou limpar.',
-                  ),
+                if (drawing.full) Text(context.l10n.drawingFull),
                 const SizedBox(height: 12),
                 FilledButton.icon(
                   onPressed: drawing.hasInk ? model.checkDrawing : null,
                   icon: const Icon(Icons.check_rounded),
-                  label: const Text('Conferir desenho'),
+                  label: Text(context.l10n.checkDrawing),
                 ),
               ],
             ),
@@ -163,12 +164,12 @@ class DrawingRoundView extends StatelessWidget {
           child: Column(
             children: [
               if (model.feedback == RoundFeedback.retry)
-                const Text(
-                  'Vamos aproximar o contorno do modelo? Acrescente ou ajuste os traços. A dica pode ajudar.',
+                Text(context.l10n.drawingRetry, textAlign: TextAlign.center),
+              if (model.mediaMessage != null)
+                Text(
+                  model.mediaMessage!.resolve(context),
                   textAlign: TextAlign.center,
                 ),
-              if (model.mediaMessage != null)
-                Text(model.mediaMessage!, textAlign: TextAlign.center),
             ],
           ),
         ),
@@ -179,15 +180,12 @@ class DrawingRoundView extends StatelessWidget {
             icon: const Icon(Icons.arrow_forward_rounded),
             label: Text(
               model.index == model.session.rounds.length - 1
-                  ? 'Concluir brincadeira'
-                  : 'Próxima descoberta',
+                  ? context.l10n.finishGame
+                  : context.l10n.nextRound,
             ),
           )
         else
-          TextButton(
-            onPressed: onAdvance,
-            child: const Text('Pular por enquanto'),
-          ),
+          TextButton(onPressed: onAdvance, child: Text(context.l10n.skipRound)),
         const SizedBox(height: 16),
       ],
     );

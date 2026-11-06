@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
-import '../domain/account_repository.dart';
+
 import '../../../core/analytics/usage_analytics.dart';
+import '../domain/account_repository.dart';
+import 'account_message.dart';
 
 class AccountViewModel extends ChangeNotifier {
   AccountViewModel(
@@ -9,26 +11,33 @@ class AccountViewModel extends ChangeNotifier {
   });
   final AccountRepository _repository;
   final UsageAnalytics analytics;
-  bool busy = false;
+  bool _busy = false;
   bool _disposed = false;
-  String? name;
-  String? error;
+  bool get busy => _busy;
+  String? get name => _name;
+  AccountMessage? get error => _error;
+  String? _name;
+  AccountMessage? _error;
   Future<void> load() async {
-    busy = true;
+    if (_disposed || _busy) return;
+    _busy = true;
+    _error = null;
     notifyListeners();
     try {
-      name = await _repository.currentName();
-      if (!_disposed && name != null) {
+      final currentName = await _repository.currentName();
+      if (_disposed) return;
+      _name = currentName;
+      if (_name != null) {
         analytics.screen(UsageScreen.accountOverview);
       }
     } on UnsupportedError {
-      error =
-          'Contas ainda não foram configuradas nesta plataforma. As brincadeiras continuam disponíveis.';
+      if (_disposed) return;
+      _error = AccountMessage.notConfigured;
     } on Exception {
-      error =
-          'O serviço de contas está indisponível. Você pode continuar brincando sem conta.';
+      if (_disposed) return;
+      _error = AccountMessage.unavailable;
     } finally {
-      busy = false;
+      _busy = false;
       if (!_disposed) notifyListeners();
     }
   }
@@ -38,22 +47,23 @@ class AccountViewModel extends ChangeNotifier {
     required String password,
     String? registrationName,
   }) async {
-    if (busy) return;
-    busy = true;
-    error = null;
+    if (_disposed || _busy) return;
+    _busy = true;
+    _error = null;
     notifyListeners();
     try {
-      name = registrationName == null
+      final authenticatedName = registrationName == null
           ? await _repository.signIn(email, password)
           : await _repository.register(registrationName, email, password);
-      if (!_disposed) {
-        analytics.event(
-          registrationName == null ? UsageEvent.login : UsageEvent.signUp,
-          parameters: {UsageParameter.method: 'password'},
-        );
-        analytics.screen(UsageScreen.accountOverview);
-      }
+      if (_disposed) return;
+      _name = authenticatedName;
+      analytics.event(
+        registrationName == null ? UsageEvent.login : UsageEvent.signUp,
+        parameters: {UsageParameter.method: 'password'},
+      );
+      analytics.screen(UsageScreen.accountOverview);
     } on AccountFailure catch (exception) {
+      if (_disposed) return;
       analytics.event(
         UsageEvent.accountFailure,
         parameters: {
@@ -63,47 +73,43 @@ class AccountViewModel extends ChangeNotifier {
           UsageParameter.reason: exception.kind.name,
         },
       );
-      error = switch (exception.kind) {
-        AccountFailureKind.emailInUse =>
-          'Este e-mail já tem uma conta. Use a opção Entrar.',
-        AccountFailureKind.invalidEmail => 'Confira o endereço de e-mail.',
-        AccountFailureKind.weakPassword =>
-          'Escolha uma senha mais forte, com pelo menos 8 caracteres.',
-        AccountFailureKind.connection =>
-          'Confira sua conexão e tente novamente.',
-        AccountFailureKind.rateLimited =>
-          'Aguarde um pouco antes de tentar novamente.',
-        _ =>
-          'Não foi possível acessar a conta. Confira os dados e tente novamente.',
+      _error = switch (exception.kind) {
+        AccountFailureKind.emailInUse => AccountMessage.emailInUse,
+        AccountFailureKind.invalidEmail => AccountMessage.invalidEmail,
+        AccountFailureKind.weakPassword => AccountMessage.weakPassword,
+        AccountFailureKind.connection => AccountMessage.connection,
+        AccountFailureKind.rateLimited => AccountMessage.rateLimited,
+        AccountFailureKind.invalidCredentials =>
+          AccountMessage.invalidCredentials,
       };
     } on UnsupportedError {
-      error =
-          'Contas ainda não foram configuradas nesta plataforma. As brincadeiras continuam disponíveis.';
+      if (_disposed) return;
+      _error = AccountMessage.notConfigured;
     } on Exception {
-      error =
-          'O serviço de contas está indisponível. Você pode continuar brincando sem conta.';
+      if (_disposed) return;
+      _error = AccountMessage.unavailable;
     } finally {
-      busy = false;
+      _busy = false;
       if (!_disposed) notifyListeners();
     }
   }
 
   Future<void> signOut() async {
-    if (busy) return;
-    busy = true;
+    if (_disposed || _busy) return;
+    _busy = true;
     notifyListeners();
     try {
       await _repository.signOut();
-      if (!_disposed) {
-        analytics.event(UsageEvent.logout);
-        analytics.screen(UsageScreen.accountLogin);
-      }
-      name = null;
-      error = null;
+      if (_disposed) return;
+      analytics.event(UsageEvent.logout);
+      analytics.screen(UsageScreen.accountLogin);
+      _name = null;
+      _error = null;
     } on Exception {
-      error = 'Não foi possível sair da conta. Tente novamente.';
+      if (_disposed) return;
+      _error = AccountMessage.signOutFailed;
     } finally {
-      busy = false;
+      _busy = false;
       if (!_disposed) notifyListeners();
     }
   }
@@ -111,6 +117,7 @@ class AccountViewModel extends ChangeNotifier {
   @override
   void dispose() {
     _disposed = true;
+    _busy = false;
     super.dispose();
   }
 }

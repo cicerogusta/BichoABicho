@@ -1,19 +1,21 @@
-import 'support/profile_navigation.dart';
-import 'dart:io';
-import 'dart:ui' as ui;
 import 'package:bicho_a_bicho/app/app.dart';
 import 'package:bicho_a_bicho/core/theme/app_theme.dart';
+import 'package:bicho_a_bicho/features/animals/domain/animal_catalog.dart';
 import 'package:bicho_a_bicho/features/games/presentation/widgets/animal_celebration.dart';
-import 'package:bicho_a_bicho/features/animals/domain/animal.dart';
 import 'package:bicho_a_bicho/features/opening/presentation/opening_page.dart';
 import 'package:bicho_a_bicho/features/settings/presentation/app_settings.dart';
+import 'package:bicho_a_bicho/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import 'support/capture_preview.dart';
 import 'support/fakes.dart';
+import 'support/profile_navigation.dart';
 
 Widget shell(Widget child, {bool reduced = false}) => MaterialApp(
+  supportedLocales: AppLocalizations.supportedLocales,
+  localizationsDelegates: AppLocalizations.localizationsDelegates,
   debugShowCheckedModeBanner: false,
   theme: AppTheme.create(),
   builder: (context, child) => MediaQuery(
@@ -48,7 +50,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 1200));
       expect(completed, 0);
       if (const bool.fromEnvironment('CAPTURE_PREVIEWS')) {
-        await capture(tester, key, 'opening');
+        await capturePreview(tester, key, 'opening');
       }
       await tester.pump(const Duration(milliseconds: 3799));
       expect(completed, 0);
@@ -188,7 +190,7 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
     if (const bool.fromEnvironment('CAPTURE_PREVIEWS')) {
-      await capture(tester, key, 'celebration');
+      await capturePreview(tester, key, 'celebration');
     }
     await tester.pumpAndSettle();
     expect(find.byType(AnimalCelebration), findsOneWidget);
@@ -208,25 +210,5 @@ void main() {
       find.bySemanticsLabel('Cachorro comemorando seu acerto'),
       findsOneWidget,
     );
-  });
-}
-
-Future<void> capture(WidgetTester tester, GlobalKey key, String name) async {
-  final images = tester.widgetList<Image>(find.byType(Image)).toList();
-  await tester.runAsync(() async {
-    for (final image in images) {
-      await precacheImage(image.image, key.currentContext!);
-    }
-  });
-  await tester.pump();
-  await tester.runAsync(() async {
-    final boundary =
-        key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
-    final image = await boundary.toImage();
-    final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-    final file = File('docs/previews/$name.png');
-    await file.parent.create(recursive: true);
-    await file.writeAsBytes(bytes!.buffer.asUint8List());
-    image.dispose();
   });
 }

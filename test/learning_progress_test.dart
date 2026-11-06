@@ -1,14 +1,16 @@
-import 'support/profile_fixtures.dart';
 import 'dart:convert';
 import 'dart:math';
+
 import 'package:bicho_a_bicho/features/games/domain/game_definition.dart';
 import 'package:bicho_a_bicho/features/games/domain/game_session.dart';
 import 'package:bicho_a_bicho/features/games/presentation/game_view_model.dart';
 import 'package:bicho_a_bicho/features/progress/domain/learning_history.dart';
 import 'package:bicho_a_bicho/features/settings/presentation/app_settings.dart';
 import 'package:flutter_test/flutter_test.dart';
+
 import 'support/fake_analytics.dart';
 import 'support/fakes.dart';
+import 'support/profile_fixtures.dart';
 
 GameViewModel createModel(AppSettings settings, {FakeSpeech? speech}) =>
     GameViewModel(

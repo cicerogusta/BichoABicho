@@ -1,16 +1,20 @@
 import 'dart:async';
+
 import 'package:flutter/foundation.dart';
+
+import '../../../core/analytics/usage_analytics.dart';
 import '../../../core/services/animal_audio.dart';
 import '../../../core/services/animal_speech.dart';
 import '../../animals/domain/animal.dart';
-import '../domain/game_session.dart';
-import '../../../core/analytics/usage_analytics.dart';
 import '../../progress/domain/learning_history.dart';
-import '../domain/game_definition.dart';
 import '../domain/drawing_evaluator.dart';
 import '../domain/drawing_template.dart';
-import 'drawing_controller.dart';
+import '../domain/game_definition.dart';
+import '../domain/game_session.dart';
 import '../domain/memory_board.dart';
+import 'drawing_controller.dart';
+import 'game_media_controller.dart';
+import 'game_media_message.dart';
 import 'memory_controller.dart';
 
 enum RoundFeedback { none, retry, correct }
@@ -18,20 +22,35 @@ enum RoundFeedback { none, retry, correct }
 class GameViewModel extends ChangeNotifier {
   GameViewModel({
     required this.session,
-    required this.audio,
-    required this.speech,
-    this.soundEnabled,
+    required AnimalAudio audio,
+    required AnimalSpeech speech,
+    bool Function()? soundEnabled,
     this.analytics = const NoopUsageAnalytics(),
     this.onObservation,
   }) {
+    _media = GameMediaController(
+      audio: audio,
+      speech: speech,
+      soundEnabled: () => soundEnabled?.call() ?? false,
+      isActive: () => !_disposed && !_paused && !_finished && !_advancing,
+      canListen: () => _acceptsAnswer && session.kind == GameKind.speaking,
+      animalSound: () => round.animal.sound,
+      matchesAnimal: (words) => normalizeWords(
+        words,
+      ).split(' ').contains(normalizeWords(round.animal.name)),
+      onRecognized: () => answer(round.answer, byVoice: true),
+      onEvent: (event, parameters) => _track(event, parameters: parameters),
+    )..addListener(_onMediaChanged);
     _track(UsageEvent.gameStarted, round: false);
     _track(UsageEvent.roundStarted);
     _observe(LearningAction.started);
   }
+  late final GameMediaController _media;
+  void _onMediaChanged() {
+    if (!_disposed) notifyListeners();
+  }
+
   final GameSession session;
-  final AnimalAudio audio;
-  final AnimalSpeech speech;
-  final bool Function()? soundEnabled;
   final UsageAnalytics analytics;
   final void Function(LearningObservation)? onObservation;
   late final DrawingController? drawing = session.kind == GameKind.drawing
@@ -108,32 +127,31 @@ class GameViewModel extends ChangeNotifier {
     );
   }
 
-  static const celebrationAsset = 'celebration.wav';
+  static const celebrationAsset = GameMediaController.celebrationAsset;
   int _index = 0;
-  int _generation = 0;
+
   bool _disposed = false;
-  bool _mediaBusy = false;
+
   bool _advancing = false;
-  bool _startingSpeech = false;
-  bool _listening = false;
+
   bool _paused = false;
   bool _finished = false;
   bool _hintVisible = false;
-  String? _mediaMessage;
+
   RoundFeedback _feedback = RoundFeedback.none;
   final Set<String> _attempted = {};
   final Set<int> _countedAnimals = {};
   Set<int> get countedAnimals => Set.unmodifiable(_countedAnimals);
-  bool get listening => _listening;
+  bool get listening => _media.listening;
   bool get paused => _paused;
   bool get finished => _finished;
   bool get hintVisible => _hintVisible;
-  String? get mediaMessage => _mediaMessage;
+  GameMediaMessage? get mediaMessage => _media.mediaMessage;
   RoundFeedback get feedback => _feedback;
   Set<String> get attempted => Set.unmodifiable(_attempted);
   int get index => _index;
   GameRound get round => session.rounds[_index];
-  bool get mediaBusy => _mediaBusy;
+  bool get mediaBusy => _media.mediaBusy;
 
   void answer(String value, {bool byVoice = false}) {
     if (!_acceptsAnswer ||
@@ -183,33 +201,11 @@ class GameViewModel extends ChangeNotifier {
     if (_feedback == RoundFeedback.retry && attemptedValue != null) {
       _attempted.add(attemptedValue);
     }
-    _mediaMessage = null;
-    unawaited(_feedback == RoundFeedback.correct ? _celebrate() : stopMedia());
+    _media.clearMessage();
+    unawaited(
+      _feedback == RoundFeedback.correct ? _media.celebrate() : stopMedia(),
+    );
     notifyListeners();
-  }
-
-  Future<void> _celebrate() async {
-    final stopping = stopMedia();
-    final generation = _generation;
-    await stopping;
-    if (_disposed ||
-        _paused ||
-        generation != _generation ||
-        !(soundEnabled?.call() ?? false)) {
-      return;
-    }
-    try {
-      await audio.play(celebrationAsset);
-    } on Exception {
-      if (!_disposed && generation == _generation) {
-        _track(
-          UsageEvent.mediaUnavailable,
-          parameters: {UsageParameter.feature: 'celebration_audio'},
-        );
-        _mediaMessage = 'Você acertou! A música não pôde tocar desta vez.';
-        notifyListeners();
-      }
-    }
   }
 
   void showHint() {
@@ -244,19 +240,7 @@ class GameViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> stopListening() async {
-    if (_listening) {
-      _track(
-        UsageEvent.speechFinished,
-        parameters: {UsageParameter.result: 'cancelled'},
-      );
-    }
-    await stopMedia();
-    if (!_disposed) {
-      _mediaMessage = 'Você pode falar de novo ou tocar na resposta.';
-      notifyListeners();
-    }
-  }
+  Future<void> stopListening() => _media.stopListening();
 
   Future<void> next() async {
     if (_disposed || _paused || _finished || _advancing) return;
@@ -303,7 +287,7 @@ class GameViewModel extends ChangeNotifier {
       _attempted.clear();
       _countedAnimals.clear();
       _hintVisible = false;
-      _mediaMessage = null;
+      _media.clearMessage();
       _attempts = 0;
       _roundWatch
         ..reset()
@@ -315,129 +299,11 @@ class GameViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> playSound(bool enabled) async {
-    if (_mediaBusy || _listening || _paused || _finished) return;
-    _track(UsageEvent.animalSoundRequested);
-    if (!enabled) {
-      _mediaMessage =
-          'O som está desligado. Você pode ativá-lo no botão de som.';
-      notifyListeners();
-      return;
-    }
-    final generation = ++_generation;
-    _mediaBusy = true;
-    _mediaMessage = null;
-    notifyListeners();
-    try {
-      await audio.play(round.animal.sound);
-    } on Exception {
-      if (!_disposed && generation == _generation) {
-        _track(
-          UsageEvent.mediaUnavailable,
-          parameters: {UsageParameter.feature: 'animal_audio'},
-        );
-        _mediaMessage =
-            'O som não pôde tocar. Você pode continuar pela imagem.';
-      }
-    } finally {
-      if (!_disposed && generation == _generation) {
-        _mediaBusy = false;
-        notifyListeners();
-      }
-    }
-  }
+  Future<void> playSound(bool enabled) => _media.playSound(enabled);
 
-  Future<void> listen() async {
-    if (_listening ||
-        _startingSpeech ||
-        _mediaBusy ||
-        _paused ||
-        _finished ||
-        _feedback == RoundFeedback.correct) {
-      return;
-    }
-    _startingSpeech = true;
-    final pendingStop = stopMedia();
-    final preparationGeneration = _generation;
-    await pendingStop;
-    _startingSpeech = false;
-    if (_disposed || _paused || preparationGeneration != _generation) return;
-    final generation = ++_generation;
-    _listening = true;
-    _track(UsageEvent.speechStarted);
-    _mediaMessage = 'Estou ouvindo. Diga o nome do bichinho.';
-    notifyListeners();
-    bool active() => !_disposed && generation == _generation;
-    var reported = false;
-    var unavailableReported = false;
-    void report(String result) {
-      if (!reported) {
-        reported = true;
-        _track(
-          UsageEvent.speechFinished,
-          parameters: {UsageParameter.result: result},
-        );
-      }
-    }
+  Future<void> listen() => _media.listen();
 
-    void unavailable() {
-      if (!active() || unavailableReported) return;
-      unavailableReported = true;
-      report('unavailable');
-      _track(
-        UsageEvent.mediaUnavailable,
-        parameters: {UsageParameter.feature: 'speech'},
-      );
-      _listening = false;
-      _mediaMessage =
-          'Não consegui ouvir agora. Você pode responder tocando na imagem.';
-      notifyListeners();
-    }
-
-    try {
-      final available = await speech.listen(
-        onFinal: (words) {
-          if (!active()) return;
-          _listening = false;
-          if (normalizeWords(
-            words,
-          ).split(' ').contains(normalizeWords(round.animal.name))) {
-            report('recognized');
-            answer(round.answer, byVoice: true);
-          } else {
-            report('no_match');
-            _mediaMessage =
-                'Você pode tentar falar de novo ou tocar na resposta.';
-            notifyListeners();
-          }
-        },
-        onDone: () {
-          if (active()) {
-            report('no_match');
-            _listening = false;
-            _mediaMessage = 'Pode falar de novo ou escolher uma imagem.';
-            notifyListeners();
-          }
-        },
-        onError: unavailable,
-      );
-      if (!available) unavailable();
-      if (!active()) await speech.cancel();
-    } on Exception {
-      unavailable();
-    }
-  }
-
-  Future<void> stopMedia() async {
-    _generation++;
-    _listening = false;
-    _mediaBusy = false;
-    try {
-      await Future.wait([speech.cancel(), audio.stop()]);
-    } on Exception {
-      if (!_disposed) _mediaMessage = 'O recurso de áudio está indisponível.';
-    }
-  }
+  Future<void> stopMedia() => _media.stopMedia();
 
   Future<void> pause({bool fromBackground = false}) async {
     drawing?.end();
@@ -463,7 +329,7 @@ class GameViewModel extends ChangeNotifier {
     _track(UsageEvent.gameResumed);
     _paused = false;
     _memory?.resume();
-    _mediaMessage = null;
+    _media.clearMessage();
     notifyListeners();
   }
 
@@ -488,16 +354,8 @@ class GameViewModel extends ChangeNotifier {
     _disposed = true;
     drawing?.dispose();
     _memory?.dispose();
-    _generation++;
-    unawaited(_release());
+    _media.removeListener(_onMediaChanged);
+    _media.dispose();
     super.dispose();
-  }
-
-  Future<void> _release() async {
-    try {
-      await Future.wait([speech.cancel(), audio.dispose()]);
-    } on Exception {
-      /* Platform may already be detached during shutdown. */
-    }
   }
 }

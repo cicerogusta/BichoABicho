@@ -1,12 +1,17 @@
 import 'dart:async';
+
+import 'package:bicho_a_bicho/l10n/localization.dart';
 import 'package:flutter/material.dart';
+
+import '../../../core/analytics/usage_analytics.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/soft_card.dart';
 import '../../games/domain/game_definition.dart';
+import '../../games/presentation/game_catalog.dart';
 import '../../settings/presentation/app_settings.dart';
 import '../domain/learning_history.dart';
+import 'profile_labels.dart';
 import 'profile_selection_page.dart';
-import '../../../core/analytics/usage_analytics.dart';
 
 class LearningReport extends StatefulWidget {
   const LearningReport({super.key, required this.settings});
@@ -40,6 +45,7 @@ class _LearningReportState extends State<LearningReport> {
   Widget build(BuildContext context) => ListenableBuilder(
     listenable: widget.settings,
     builder: (context, _) {
+      final games = gameCatalog(context.l10n);
       final settings = widget.settings;
       final history = settings.learningHistory;
       final total = history.summarize(
@@ -56,13 +62,11 @@ class _LearningReportState extends State<LearningReport> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'Acompanhamento das brincadeiras',
+            context.l10n.reportTitle,
             style: Theme.of(context).textTheme.titleLarge,
           ),
           const SizedBox(height: 8),
-          const Text(
-            'Disponível sem login. Escolha abaixo de quem deseja consultar os registros. Consultar outro cartão não muda quem está brincando.',
-          ),
+          Text(context.l10n.reportDescription),
           const SizedBox(height: 16),
           if (settings.storageFailed) ...[
             SoftCard(
@@ -70,22 +74,18 @@ class _LearningReportState extends State<LearningReport> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Não foi possível ler ou salvar parte dos registros. Os dados desta sessão continuam disponíveis enquanto o app estiver aberto.',
-                  ),
+                  Text(context.l10n.reportStorageFailure),
                   const SizedBox(height: 8),
                   OutlinedButton(
                     onPressed: () => unawaited(settings.retrySave()),
-                    child: const Text('Tentar salvar dados locais'),
+                    child: Text(context.l10n.retrySave),
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 16),
           ],
-          const Text(
-            'Acumulado desde o início do registro ou a última limpeza. A conta opcional não sincroniza estes dados.',
-          ),
+          Text(context.l10n.reportLocalNotice),
           const SizedBox(height: 16),
           SoftCard(
             color: AppColors.sage,
@@ -93,7 +93,7 @@ class _LearningReportState extends State<LearningReport> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'De quem é este relatório?',
+                  context.l10n.reportProfileTitle,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 const SizedBox(height: 12),
@@ -107,22 +107,33 @@ class _LearningReportState extends State<LearningReport> {
                     decorative: true,
                   ),
                   label: Text(
-                    '${settings.profileLabel(_reportProfile)} • ${settings.profile(_reportProfile).cardNumber}',
+                    context.l10n.profileIdentity(
+                      settings
+                          .profile(_reportProfile)
+                          .displayName(context.l10n),
+                      settings
+                          .profile(_reportProfile)
+                          .displayCardNumber(context.l10n),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Brincando agora: ${settings.profileLabel(settings.activeProfile)}. Para trocar quem brinca, use o cartão na tela inicial.',
+                  context.l10n.reportActiveProfile(
+                    settings
+                        .profile(settings.activeProfile)
+                        .displayName(context.l10n),
+                  ),
                 ),
               ],
             ),
           ),
           const SizedBox(height: 16),
           _filter(
-            label: 'Atividade do relatório',
+            label: context.l10n.reportActivityFilter,
             value: _game?.name ?? 'all',
             items: {
-              'all': 'Todas as atividades',
+              'all': context.l10n.allActivities,
               for (final game in games) game.kind.name: game.title,
             },
             onChanged: (value) => setState(
@@ -132,24 +143,20 @@ class _LearningReportState extends State<LearningReport> {
           ),
           const SizedBox(height: 12),
           _filter(
-            label: 'Alternativas no momento da rodada',
+            label: context.l10n.reportChoicesFilter,
             value: _choices?.toString() ?? 'all',
-            items: const {
-              'all': 'Todas as configurações',
-              '2': '2 alternativas',
-              '3': '3 alternativas',
-              '0': 'Desenho sem alternativas',
+            items: {
+              'all': context.l10n.allConfigurations,
+              '2': context.l10n.twoAlternatives,
+              '3': context.l10n.threeAlternatives,
+              '0': context.l10n.drawingWithoutChoices,
             },
             onChanged: (value) =>
                 setState(() => _choices = int.tryParse(value)),
           ),
           const SizedBox(height: 16),
           if (total.started == 0)
-            const SoftCard(
-              child: Text(
-                'Ainda não há registros neste filtro. Abra uma brincadeira com este perfil para começar. O uso anterior à atualização não tinha registro de erros.',
-              ),
-            )
+            SoftCard(child: Text(context.l10n.reportEmpty))
           else ...[
             LayoutBuilder(
               builder: (context, constraints) {
@@ -165,15 +172,18 @@ class _LearningReportState extends State<LearningReport> {
                   runSpacing: 12,
                   children: [
                     for (final metric in [
-                      ('Tentativas incorretas', '${total.errors}'),
+                      (context.l10n.reportErrors, '${total.errors}'),
                       (
-                        'Rodadas com erro',
-                        '${total.roundsWithErrors} de ${total.answered} respondidas',
+                        context.l10n.reportRoundsWithErrors,
+                        context.l10n.reportAnsweredWithErrors(
+                          total.roundsWithErrors,
+                          total.answered,
+                        ),
                       ),
-                      ('Acertos na primeira tentativa', '${total.firstTry}'),
-                      ('Rodadas com dica', '${total.hints}'),
-                      ('Rodadas resolvidas', '${total.correct}'),
-                      ('Rodadas puladas', '${total.skipped}'),
+                      (context.l10n.reportFirstTry, '${total.firstTry}'),
+                      (context.l10n.reportHints, '${total.hints}'),
+                      (context.l10n.reportResolved, '${total.correct}'),
+                      (context.l10n.reportSkipped, '${total.skipped}'),
                     ])
                       SizedBox(
                         width: width,
@@ -197,24 +207,18 @@ class _LearningReportState extends State<LearningReport> {
             ),
             const SizedBox(height: 12),
             Text(
-              'Rodadas abertas: ${total.started} • Com resposta: ${total.answered}. Rodadas interrompidas também ficam registradas.',
+              context.l10n.reportOpenedRounds(total.started, total.answered),
             ),
             const SizedBox(height: 24),
             Text(
-              'Animais com maior proporção de rodadas com erro',
+              context.l10n.reportAnimalRanking,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Ordem pela proporção de rodadas respondidas que tiveram erro, com o tamanho da amostra ao lado. O animal é o alvo da pergunta, inclusive em letras, contagem e histórias.',
-            ),
+            Text(context.l10n.reportRankingDescription),
             const SizedBox(height: 12),
             if (ranking.isEmpty)
-              const SoftCard(
-                child: Text(
-                  'Nenhuma tentativa incorreta registrada neste filtro.',
-                ),
-              ),
+              SoftCard(child: Text(context.l10n.reportNoErrors)),
             for (final entry in ranking) ...[
               SoftCard(
                 child: Row(
@@ -237,10 +241,17 @@ class _LearningReportState extends State<LearningReport> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Rodadas respondidas com erro: ${entry.stats.roundsWithErrors} de ${entry.stats.answered} (${(entry.stats.errorRate * 100).round()}%).',
+                            context.l10n.reportAnimalErrorRate(
+                              entry.stats.roundsWithErrors,
+                              entry.stats.answered,
+                              (entry.stats.errorRate * 100).round(),
+                            ),
                           ),
                           Text(
-                            'Tentativas incorretas: ${entry.stats.errors} • Rodadas com dica: ${entry.stats.hints}',
+                            context.l10n.reportAnimalErrorsAndHints(
+                              entry.stats.errors,
+                              entry.stats.hints,
+                            ),
                           ),
                         ],
                       ),
@@ -252,7 +263,7 @@ class _LearningReportState extends State<LearningReport> {
             ],
             const SizedBox(height: 12),
             Text(
-              'Por atividade',
+              context.l10n.reportByActivity,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 12),
@@ -269,9 +280,7 @@ class _LearningReportState extends State<LearningReport> {
               ),
           ],
           const SizedBox(height: 16),
-          const Text(
-            'Como ler: cada resposta incorreta conta como uma tentativa; uma rodada com vários erros conta uma vez em “Rodadas com erro”. Dicas não são erros. Acerto na primeira tentativa pode ter tido dica. Falhas do microfone, pausas e saltos não são erros. Uma amostra pequena ou ajuda de um adulto pode mudar a interpretação. Esses dados descrevem o uso do app e não medem desenvolvimento ou dificuldade clínica.',
-          ),
+          Text(context.l10n.reportInterpretation),
           const SizedBox(height: 8),
           Align(
             alignment: Alignment.centerLeft,
@@ -279,7 +288,9 @@ class _LearningReportState extends State<LearningReport> {
               onPressed: () => _clearProfile(context),
               icon: const Icon(Icons.delete_outline_rounded),
               label: Text(
-                'Apagar acompanhamento de ${settings.profileLabel(_reportProfile)}',
+                context.l10n.clearProfileHistory(
+                  settings.profile(_reportProfile).displayName(context.l10n),
+                ),
               ),
             ),
           ),
@@ -327,19 +338,19 @@ class _LearningReportState extends State<LearningReport> {
       builder: (context) => AlertDialog(
         scrollable: true,
         title: Text(
-          'Apagar acompanhamento de ${widget.settings.profileLabel(profile)}?',
+          context.l10n.clearProfileHistoryTitle(
+            widget.settings.profile(profile).displayName(context.l10n),
+          ),
         ),
-        content: const Text(
-          'Apaga erros, acertos, dicas e rodadas deste perfil em todas as atividades e configurações. Os outros perfis e os ajustes serão preservados.',
-        ),
+        content: Text(context.l10n.clearProfileHistoryDescription),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancelar'),
+            child: Text(context.l10n.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Apagar acompanhamento'),
+            child: Text(context.l10n.clearHistory),
           ),
         ],
       ),
@@ -365,8 +376,13 @@ class _ActivitySummary extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             stats.started == 0
-                ? 'Ainda sem registros.'
-                : 'Tentativas incorretas: ${stats.errors} • Rodadas respondidas com erro: ${stats.roundsWithErrors} de ${stats.answered} • Acertos na primeira tentativa: ${stats.firstTry}',
+                ? context.l10n.reportNoActivityRecords
+                : context.l10n.reportActivitySummary(
+                    stats.errors,
+                    stats.roundsWithErrors,
+                    stats.answered,
+                    stats.firstTry,
+                  ),
           ),
         ],
       ),

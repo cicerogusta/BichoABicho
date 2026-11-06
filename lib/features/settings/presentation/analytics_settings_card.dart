@@ -1,3 +1,4 @@
+import 'package:bicho_a_bicho/l10n/localization.dart';
 import 'package:flutter/material.dart';
 import '../../../core/analytics/analytics_controller.dart';
 import '../../../core/widgets/soft_card.dart';
@@ -13,20 +14,16 @@ class AnalyticsSettingsCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Dados de uso opcionais',
+            context.l10n.analyticsTitle,
             style: Theme.of(context).textTheme.titleLarge,
           ),
           const SizedBox(height: 12),
-          const Text(
-            'Com autorização do responsável, o Google Analytics (GA4) pode receber telas visitadas, interações dos jogos e ajustes do app, junto com um identificador da instalação e informações do dispositivo. Esses dados ajudam a melhorar as brincadeiras.',
-          ),
+          Text(context.l10n.analyticsDescription),
           const SizedBox(height: 12),
-          const Text(
-            'Não enviamos nome, e-mail, senha, idade, diagnóstico, gravações ou transcrições. Não vinculamos a análise à conta do responsável. Publicidade personalizada e identificadores de publicidade estão desativados.',
-          ),
+          Text(context.l10n.analyticsPrivacy),
           SwitchListTile.adaptive(
             contentPadding: EdgeInsets.zero,
-            title: const Text('Compartilhar dados de uso'),
+            title: Text(context.l10n.shareUsageData),
             value: analytics.consentGranted,
             onChanged: !analytics.supported || analytics.busy
                 ? null
@@ -36,18 +33,18 @@ class AnalyticsSettingsCard extends StatelessWidget {
                         context: context,
                         builder: (context) => AlertDialog(
                           scrollable: true,
-                          title: const Text('Autorizar dados de uso?'),
-                          content: const Text(
-                            'Esta escolha deve ser feita pelo responsável. Ao autorizar, você permite o envio dos dados de uso descritos nesta tela ao Google Analytics. A autorização é opcional e os jogos continuam funcionando se você recusar.\n\nVocê pode desativar depois. A desativação interrompe a coleta e redefine os dados locais do SDK; não apaga dados já enviados ao Google.',
+                          title: Text(context.l10n.analyticsConsentTitle),
+                          content: Text(
+                            context.l10n.analyticsConsentDescription,
                           ),
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.pop(context, false),
-                              child: const Text('Não autorizar'),
+                              child: Text(context.l10n.declineConsent),
                             ),
                             FilledButton(
                               onPressed: () => Navigator.pop(context, true),
-                              child: const Text('Sou responsável e autorizo'),
+                              child: Text(context.l10n.grantConsent),
                             ),
                           ],
                         ),
@@ -58,28 +55,26 @@ class AnalyticsSettingsCard extends StatelessWidget {
                   },
           ),
           if (analytics.busy)
-            const Text('Aplicando sua escolha…')
+            Text(context.l10n.analyticsApplying)
           else if (!analytics.supported)
-            const Text('A análise ainda não está configurada nesta plataforma.')
+            Text(context.l10n.analyticsNotConfigured)
           else if (analytics.status == AnalyticsStatus.failed)
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Não foi possível aplicar ou salvar a escolha. O envio de eventos do app está suspenso. Tente novamente antes de fechar o aplicativo.',
-                ),
+                Text(context.l10n.analyticsFailed),
                 TextButton(
                   onPressed: () =>
                       analytics.setConsent(analytics.consentGranted),
-                  child: const Text('Tentar novamente'),
+                  child: Text(context.l10n.tryAgain),
                 ),
               ],
             )
           else
             Text(
               analytics.enabled
-                  ? 'Coleta autorizada neste dispositivo. Você pode desativar a qualquer momento.'
-                  : 'Coleta desativada. Todas as brincadeiras continuam disponíveis.',
+                  ? context.l10n.analyticsEnabled
+                  : context.l10n.analyticsDisabled,
             ),
         ],
       ),

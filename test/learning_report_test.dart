@@ -1,8 +1,5 @@
-import 'support/profile_fixtures.dart';
-import 'support/profile_navigation.dart';
-import 'dart:io';
 import 'dart:math';
-import 'dart:ui' as ui;
+
 import 'package:bicho_a_bicho/app/app.dart';
 import 'package:bicho_a_bicho/core/theme/app_theme.dart';
 import 'package:bicho_a_bicho/features/games/domain/game_definition.dart';
@@ -10,11 +7,16 @@ import 'package:bicho_a_bicho/features/games/domain/game_session.dart';
 import 'package:bicho_a_bicho/features/games/presentation/game_view_model.dart';
 import 'package:bicho_a_bicho/features/progress/presentation/learning_report.dart';
 import 'package:bicho_a_bicho/features/settings/presentation/app_settings.dart';
+import 'package:bicho_a_bicho/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import 'support/capture_preview.dart';
 import 'support/fakes.dart';
+import 'support/localization.dart';
+import 'support/profile_fixtures.dart';
+import 'support/profile_navigation.dart';
 
 Future<void> seed(AppSettings settings) async {
   final model = GameViewModel(
@@ -38,6 +40,8 @@ Future<void> seed(AppSettings settings) async {
 }
 
 Widget report(AppSettings settings) => MaterialApp(
+  supportedLocales: AppLocalizations.supportedLocales,
+  localizationsDelegates: AppLocalizations.localizationsDelegates,
   debugShowCheckedModeBanner: false,
   theme: AppTheme.create(),
   home: Scaffold(
@@ -77,22 +81,7 @@ void main() {
       expect(find.text('Tentativas incorretas'), findsOneWidget);
       expect(find.text('1 de 1 respondidas'), findsOneWidget);
       if (const bool.fromEnvironment('CAPTURE_PREVIEWS')) {
-        await tester.runAsync(() async {
-          for (final picture in tester.widgetList<Image>(find.byType(Image))) {
-            await precacheImage(picture.image, key.currentContext!);
-          }
-        });
-        await tester.pumpAndSettle();
-        await tester.runAsync(() async {
-          final boundary =
-              key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
-          final image = await boundary.toImage();
-          final data = await image.toByteData(format: ui.ImageByteFormat.png);
-          await File(
-            'docs/previews/parent_report.png',
-          ).writeAsBytes(data!.buffer.asUint8List());
-          image.dispose();
-        });
+        await capturePreview(tester, key, 'parent_report');
       }
       await chooseLearner(tester, 'Meu Gato');
       await tester.pumpAndSettle();

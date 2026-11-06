@@ -1,3 +1,4 @@
+import 'package:bicho_a_bicho/l10n/localization.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/soft_card.dart';
@@ -11,7 +12,7 @@ class StoryPrompt extends StatelessWidget {
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
-      const Text('Faz de conta • leia junto', textAlign: TextAlign.center),
+      Text(context.l10n.storySharedReading, textAlign: TextAlign.center),
       const SizedBox(height: 8),
       Text(
         story.title,
@@ -44,10 +45,7 @@ class StoryPrompt extends StatelessWidget {
         style: Theme.of(context).textTheme.titleLarge,
       ),
       const SizedBox(height: 8),
-      const Text(
-        'Pode olhar a história de novo quando quiser.',
-        textAlign: TextAlign.center,
-      ),
+      Text(context.l10n.storyReadAgain, textAlign: TextAlign.center),
     ],
   );
 }
@@ -59,14 +57,14 @@ class _SceneCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Semantics(
-    label: 'Cena ${index + 1}. ${scene.sentence}',
+    label: context.l10n.storySceneLabel(index + 1, scene.sentence),
     excludeSemantics: true,
     child: SoftCard(
       padding: const EdgeInsets.all(12),
       child: Column(
         children: [
           Text(
-            'Cena ${index + 1}',
+            context.l10n.storySceneNumber(index + 1),
             style: const TextStyle(color: AppColors.muted),
           ),
           const SizedBox(height: 8),

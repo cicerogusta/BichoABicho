@@ -1,6 +1,6 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter/widgets.dart';
 import 'package:bicho_a_bicho/core/widgets/soft_card.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 /// Existing game tests use unnamed cards; registration has dedicated coverage.
 Future<void> chooseLearner(

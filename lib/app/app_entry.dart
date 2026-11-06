@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../features/opening/presentation/opening_page.dart';
+
 import '../core/analytics/usage_analytics.dart';
+import '../features/opening/presentation/opening_page.dart';
 
 /// Kept above the home page so settings updates and returning from a game do not replay the opening.
 class AppEntry extends StatefulWidget {

@@ -96,7 +96,7 @@ Capturas da versão atual em **layout mobile de 430 × 932**, geradas diretament
   </tr>
 </table>
 
-As imagens da galeria estão em [docs/previews/readme](docs/previews/readme/). Outros tamanhos de tela usados nos testes estão em [docs/previews](docs/previews/).
+As imagens da galeria estão em [docs/previews/readme](docs/previews/readme/). As capturas opcionais dos testes ficam em `build/previews/`, fora do controle de versão.
 
 ## Tecnologias e arquitetura
 
@@ -106,6 +106,7 @@ O projeto utiliza **Feature-First + MVVM**, com domínio independente de Flutter
 | --- | --- |
 | Flutter e Dart | Interface, navegação e regras das atividades. |
 | `flutter_localizations` | Localização em português brasileiro. |
+| `intl` e `gen-l10n` | Recursos ARB, parâmetros tipados e plurais da interface. |
 | `shared_preferences` | Preferências, cartões e histórico local com `SharedPreferencesAsync`. |
 | `audioplayers` | Sons dos animais e áudio de comemoração. |
 | `speech_to_text` | Reconhecimento de voz opcional. |
@@ -124,11 +125,20 @@ lib/
 │   ├── opening/         # Apresentação da turma
 │   ├── progress/        # Cartões e acompanhamento local
 │   └── settings/        # Preferências e área dos responsáveis
+├── l10n/                # Recursos ARB e localização gerada pelo Flutter
 ├── firebase_options.dart
 └── main.dart
 ```
 
 Serviços de áudio, fala e analytics possuem contratos substituíveis por fakes. A navegação usa `Navigator` e `MaterialPageRoute`. Os detalhes e as decisões estão em [Arquitetura](docs/ARCHITECTURE.md).
+
+### Strings e localização
+
+Os textos da interface, rótulos de acessibilidade, mensagens de erro e metadados dos oito jogos ficam em `lib/l10n/app_pt.arb`. As telas usam `context.l10n`; números e nomes entram como parâmetros tipados, e quantidades usam plurais ICU. Para alterar textos, edite o ARB e execute `flutter gen-l10n`. O Flutter também gera esses arquivos durante `flutter pub get` e os builds; não edite `app_localizations*.dart` manualmente.
+
+Nomes dos animais, pistas e histórias são conteúdo pedagógico em português, organizado em `animal_catalog.dart` e `story_catalog.dart`. Esses dados também determinam as atividades de letras, fala e leitura; ficam separados da tradução da interface e independentes de Flutter.
+
+`AppDependencies` compõe os adaptadores de plataforma. As telas recebem suas dependências por construtor; `GameMediaController` coordena áudio e fala, e `AnimalExplorerViewModel` controla a reprodução no catálogo. Erros dos ViewModels são estados tipados, traduzidos somente na apresentação.
 
 ## Como executar
 
@@ -179,6 +189,7 @@ Execute as verificações a partir da raiz do projeto:
 
 ```sh
 dart format --output=none --set-exit-if-changed lib test tool
+flutter gen-l10n
 flutter analyze
 flutter test
 ```
@@ -192,7 +203,7 @@ flutter build apk --debug
 
 Os testes usam fakes e não dependem de rede, credenciais ou microfone. Cobrem regras das sessões, ViewModels, preferências, cartões, acompanhamento, desenho, consentimento de analytics e interações dos widgets.
 
-O [registro de validação](docs/VALIDATION.md) documenta a validação anterior de **162 testes aprovados**, análise estática sem problemas e builds Android debug e Web release concluídos em **5 de novembro de 2026**. Após a inclusão do jogo da memória, a suíte passou a **172 testes aprovados**, com análise estática sem problemas e APK release gerado na mesma data.
+O [registro de validação](docs/VALIDATION.md) documenta a revisão de **5 de novembro de 2026**: **184 testes aprovados**, análise estática sem problemas e builds Android release e Web release concluídos. A revisão inclui localização, limites de arquitetura, cancelamento de mídia e injeção de dependências. Os avisos externos da toolchain Android estão descritos no registro.
 
 Para regenerar as 13 capturas mobile em alta resolução usadas pelo README:
 
@@ -202,7 +213,7 @@ flutter test tool/generate_readme_previews.dart
 
 O gerador usa os componentes reais, fontes e imagens do aplicativo, sessões de demonstração e armazenamento em memória. Inclui a moldura de celular e os estados de cartas reveladas e escondidas do jogo da memória. Não acessa contas, microfone ou dados reais de usuários. Os arquivos são gravados em `docs/previews/readme/`.
 
-Para atualizar também as capturas nos tamanhos de tela usados pela suíte em `docs/previews/`:
+Para gerar capturas de teste nos diferentes tamanhos de tela em `build/previews/`:
 
 ```sh
 flutter test --dart-define=CAPTURE_PREVIEWS=true

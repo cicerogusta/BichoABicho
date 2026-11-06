@@ -1,5 +1,5 @@
-import 'support/profile_navigation.dart';
 import 'dart:math';
+
 import 'package:bicho_a_bicho/app/app.dart';
 import 'package:bicho_a_bicho/core/analytics/usage_analytics.dart';
 import 'package:bicho_a_bicho/features/games/domain/game_definition.dart';
@@ -8,8 +8,11 @@ import 'package:bicho_a_bicho/features/games/presentation/game_view_model.dart';
 import 'package:bicho_a_bicho/features/settings/presentation/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+
 import 'support/fake_analytics.dart';
 import 'support/fakes.dart';
+import 'support/localization.dart';
+import 'support/profile_navigation.dart';
 
 void main() {
   test('stories ask about one explicit action and include both characters', () {

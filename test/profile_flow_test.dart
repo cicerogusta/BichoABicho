@@ -1,13 +1,12 @@
-import 'dart:io';
-import 'dart:ui' as ui;
 import 'package:bicho_a_bicho/app/app.dart';
-import 'package:bicho_a_bicho/features/games/domain/game_definition.dart';
 import 'package:bicho_a_bicho/features/settings/presentation/app_settings.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import 'support/capture_preview.dart';
 import 'support/fakes.dart';
+import 'support/localization.dart';
 import 'support/profile_navigation.dart';
 
 Future<void> openApp(
@@ -88,22 +87,7 @@ void main() {
       final key = GlobalKey();
       await openApp(tester, settings, captureKey: key);
       if (const bool.fromEnvironment('CAPTURE_PREVIEWS')) {
-        await tester.runAsync(() async {
-          for (final picture in tester.widgetList<Image>(find.byType(Image))) {
-            await precacheImage(picture.image, key.currentContext!);
-          }
-        });
-        await tester.pumpAndSettle();
-        await tester.runAsync(() async {
-          final boundary =
-              key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
-          final image = await boundary.toImage();
-          final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-          await File(
-            'docs/previews/profile_selection.png',
-          ).writeAsBytes(bytes!.buffer.asUint8List());
-          image.dispose();
-        });
+        await capturePreview(tester, key, 'profile_selection');
       }
       await tester.enterText(find.byType(TextField), 'Pessoa 12');
       await tester.pumpAndSettle();

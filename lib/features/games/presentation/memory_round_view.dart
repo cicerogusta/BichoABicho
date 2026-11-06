@@ -1,10 +1,12 @@
 import 'dart:math' as math;
 
+import 'package:bicho_a_bicho/l10n/localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/soft_card.dart';
 import '../domain/memory_board.dart';
+import 'game_media_message_text.dart';
 import 'game_view_model.dart';
 import 'memory_controller.dart';
 import 'widgets/animal_celebration.dart';
@@ -30,20 +32,22 @@ class MemoryRoundView extends StatelessWidget {
         final complete = controller.phase == MemoryPhase.complete;
         final preview = controller.phase == MemoryPhase.preview;
         final message = switch (controller.phase) {
-          MemoryPhase.preview => 'Observe os bichinhos. Pode olhar sem pressa!',
-          MemoryPhase.hiding => 'Vamos esconder os bichinhos…',
+          MemoryPhase.preview => context.l10n.memoryPreview,
+          MemoryPhase.hiding => context.l10n.memoryHiding,
           MemoryPhase.gathering ||
-          MemoryPhase.shuffling => 'Embaralhando as cartas…',
-          MemoryPhase.comparing => 'São diferentes. Vamos tentar outro par?',
-          MemoryPhase.complete => 'Você encontrou todos os pares!',
-          MemoryPhase.playing =>
-            'Vire duas cartas e encontre os bichinhos iguais.',
+          MemoryPhase.shuffling => context.l10n.memoryShuffling,
+          MemoryPhase.comparing => context.l10n.memoryMismatch,
+          MemoryPhase.complete => context.l10n.memoryComplete,
+          MemoryPhase.playing => context.l10n.memoryInstruction,
         };
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Descoberta ${model.index + 1} de ${model.session.rounds.length}',
+              context.l10n.roundProgress(
+                model.index + 1,
+                model.session.rounds.length,
+              ),
               style: const TextStyle(
                 color: AppColors.primary,
                 fontWeight: FontWeight.w700,
@@ -53,12 +57,12 @@ class MemoryRoundView extends StatelessWidget {
             LinearProgressIndicator(
               value: board.pairsFound / (board.cards.length ~/ 2),
               minHeight: 8,
-              semanticsLabel: 'Pares encontrados',
+              semanticsLabel: context.l10n.memoryProgress,
               backgroundColor: AppColors.sage,
             ),
             const SizedBox(height: 24),
             Text(
-              'Encontre os pares de bichinhos iguais.',
+              context.l10n.memoryPrompt,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.headlineMedium,
             ),
@@ -68,7 +72,11 @@ class MemoryRoundView extends StatelessWidget {
             Semantics(
               liveRegion: true,
               child: Text(
-                '${board.pairsFound} de ${board.cards.length ~/ 2} pares • ${controller.attempts} tentativas',
+                context.l10n.memoryScore(
+                  board.pairsFound,
+                  board.cards.length ~/ 2,
+                  controller.attempts,
+                ),
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   color: AppColors.primary,
@@ -128,7 +136,7 @@ class MemoryRoundView extends StatelessWidget {
               FilledButton.icon(
                 onPressed: controller.start,
                 icon: const Icon(Icons.shuffle_rounded),
-                label: const Text('Esconder e embaralhar'),
+                label: Text(context.l10n.memoryStart),
               ),
             if (complete) ...[
               SoftCard(
@@ -138,7 +146,7 @@ class MemoryRoundView extends StatelessWidget {
                     AnimalCelebration(animal: model.round.animal),
                     const SizedBox(height: 12),
                     Text(
-                      'Você encontrou todos os pares!',
+                      context.l10n.memoryComplete,
                       style: Theme.of(context).textTheme.titleLarge,
                       textAlign: TextAlign.center,
                     ),
@@ -151,17 +159,20 @@ class MemoryRoundView extends StatelessWidget {
                 icon: const Icon(Icons.arrow_forward_rounded),
                 label: Text(
                   model.index == model.session.rounds.length - 1
-                      ? 'Concluir brincadeira'
-                      : 'Próxima descoberta',
+                      ? context.l10n.finishGame
+                      : context.l10n.nextRound,
                 ),
               ),
             ] else
               TextButton(
                 onPressed: onAdvance,
-                child: const Text('Pular por enquanto'),
+                child: Text(context.l10n.skipRound),
               ),
             if (model.mediaMessage != null)
-              Text(model.mediaMessage!, textAlign: TextAlign.center),
+              Text(
+                model.mediaMessage!.resolve(context),
+                textAlign: TextAlign.center,
+              ),
           ],
         );
       },
@@ -189,9 +200,11 @@ class _MemoryTile extends StatelessWidget {
   Widget build(BuildContext context) => Semantics(
     button: true,
     enabled: enabled,
-    label: visible
-        ? 'Carta $position: ${card.animal.name}${matched ? ', par encontrado' : ''}'
-        : 'Carta $position, escondida',
+    label: matched
+        ? context.l10n.memoryMatchedCard(position, card.animal.name)
+        : visible
+        ? context.l10n.memoryVisibleCard(position, card.animal.name)
+        : context.l10n.memoryHiddenCard(position),
     onTap: enabled ? onTap : null,
     excludeSemantics: true,
     child: TweenAnimationBuilder<double>(

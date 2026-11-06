@@ -15,3 +15,7 @@ linter:
   rules:
     prefer_single_quotes: true
     unawaited_futures: true
+    directives_ordering: true
+    prefer_const_constructors: true
+    prefer_const_literals_to_create_immutables: true
+    avoid_dynamic_calls: true

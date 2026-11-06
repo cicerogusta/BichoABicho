@@ -1,4 +1,7 @@
 import 'dart:convert';
+
+import 'package:bicho_a_bicho/features/animals/domain/animal_catalog.dart';
+
 import '../../animals/domain/animal.dart';
 import '../../games/domain/game_definition.dart';
 

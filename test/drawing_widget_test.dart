@@ -1,6 +1,5 @@
-import 'dart:io';
 import 'dart:math';
-import 'dart:ui' as ui;
+
 import 'package:bicho_a_bicho/core/theme/app_theme.dart';
 import 'package:bicho_a_bicho/features/games/domain/drawing_template.dart';
 import 'package:bicho_a_bicho/features/games/domain/game_definition.dart';
@@ -9,11 +8,14 @@ import 'package:bicho_a_bicho/features/games/presentation/game_page.dart';
 import 'package:bicho_a_bicho/features/games/presentation/game_view_model.dart';
 import 'package:bicho_a_bicho/features/games/presentation/widgets/animal_celebration.dart';
 import 'package:bicho_a_bicho/features/settings/presentation/app_settings.dart';
+import 'package:bicho_a_bicho/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import 'support/capture_preview.dart';
 import 'support/fakes.dart';
+import 'support/localization.dart';
 
 void main() {
   setUpAll(() async {
@@ -51,6 +53,8 @@ void main() {
           RepaintBoundary(
             key: key,
             child: MaterialApp(
+              supportedLocales: AppLocalizations.supportedLocales,
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
               debugShowCheckedModeBanner: false,
               theme: AppTheme.create(),
               home: GamePage(
@@ -128,17 +132,7 @@ void main() {
           reason: 'Canvas before $canvas; after ${tester.getRect(board)}',
         );
         if (scale == 1 && const bool.fromEnvironment('CAPTURE_PREVIEWS')) {
-          await tester.runAsync(() async {
-            final boundary =
-                key.currentContext!.findRenderObject()!
-                    as RenderRepaintBoundary;
-            final image = await boundary.toImage();
-            final data = await image.toByteData(format: ui.ImageByteFormat.png);
-            await File(
-              'docs/previews/game_drawing.png',
-            ).writeAsBytes(data!.buffer.asUint8List());
-            image.dispose();
-          });
+          await capturePreview(tester, key, 'game_drawing');
         }
         await tester.ensureVisible(find.text('Conferir desenho'));
         await tester.tap(find.text('Conferir desenho'));

@@ -1,21 +1,24 @@
-import 'support/profile_navigation.dart';
-import 'dart:io';
 import 'dart:math';
 import 'dart:ui' as ui;
+
 import 'package:bicho_a_bicho/app/app.dart';
 import 'package:bicho_a_bicho/core/theme/app_theme.dart';
+import 'package:bicho_a_bicho/features/animals/domain/animal_catalog.dart';
 import 'package:bicho_a_bicho/features/games/domain/game_definition.dart';
 import 'package:bicho_a_bicho/features/games/domain/game_session.dart';
 import 'package:bicho_a_bicho/features/games/presentation/game_page.dart';
 import 'package:bicho_a_bicho/features/games/presentation/game_view_model.dart';
 import 'package:bicho_a_bicho/features/games/presentation/widgets/animal_celebration.dart';
 import 'package:bicho_a_bicho/features/settings/presentation/app_settings.dart';
-import 'package:bicho_a_bicho/features/animals/domain/animal.dart';
+import 'package:bicho_a_bicho/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import 'support/capture_preview.dart';
 import 'support/fakes.dart';
+import 'support/localization.dart';
+import 'support/profile_navigation.dart';
 
 void main() {
   setUpAll(() async {
@@ -33,41 +36,35 @@ void main() {
     const Size(1280, 900),
     const Size(844, 390),
   ]) {
-    testWidgets('home renders without overflow at ${size.width}x${size.height}', (
-      tester,
-    ) async {
-      tester.view.physicalSize = size;
-      tester.view.devicePixelRatio = 1;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
-      final settings = AppSettings(MemorySettingsRepository());
-      final key = GlobalKey();
-      await tester.pumpWidget(
-        RepaintBoundary(
-          key: key,
-          child: AnimalApp(settings: settings),
-        ),
-      );
-      await _settleHome(tester);
-      expect(find.text('O que vamos descobrir hoje?'), findsOneWidget);
-      expect(tester.takeException(), isNull);
-      if (const bool.fromEnvironment('CAPTURE_PREVIEWS')) {
-        await tester.runAsync(() async {
-          final boundary =
-              key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
-          final image = await boundary.toImage(pixelRatio: 1);
-          final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-          final file = File(
-            'docs/previews/home_${size.width.toInt()}x${size.height.toInt()}.png',
+    testWidgets(
+      'home renders without overflow at ${size.width}x${size.height}',
+      (tester) async {
+        tester.view.physicalSize = size;
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        final settings = AppSettings(MemorySettingsRepository());
+        final key = GlobalKey();
+        await tester.pumpWidget(
+          RepaintBoundary(
+            key: key,
+            child: AnimalApp(settings: settings),
+          ),
+        );
+        await _settleHome(tester);
+        expect(find.text('O que vamos descobrir hoje?'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+        if (const bool.fromEnvironment('CAPTURE_PREVIEWS')) {
+          await capturePreview(
+            tester,
+            key,
+            'home_${size.width.toInt()}x${size.height.toInt()}',
           );
-          await file.parent.create(recursive: true);
-          await file.writeAsBytes(bytes!.buffer.asUint8List());
-          image.dispose();
-        });
-      }
-      await tester.pumpWidget(const SizedBox());
-      settings.dispose();
-    });
+        }
+        await tester.pumpWidget(const SizedBox());
+        settings.dispose();
+      },
+    );
   }
   testWidgets('navigation and parent preferences work without Firebase', (
     tester,
@@ -119,6 +116,8 @@ void main() {
             RepaintBoundary(
               key: key,
               child: MaterialApp(
+                supportedLocales: AppLocalizations.supportedLocales,
+                localizationsDelegates: AppLocalizations.localizationsDelegates,
                 debugShowCheckedModeBanner: false,
                 theme: AppTheme.create(),
                 home: GamePage(
@@ -132,7 +131,7 @@ void main() {
           await _settleHome(tester);
           expect(tester.takeException(), isNull);
           if (scale == 1 && const bool.fromEnvironment('CAPTURE_PREVIEWS')) {
-            await _capture(tester, key, 'game_${game.kind.name}');
+            await capturePreview(tester, key, 'game_${game.kind.name}');
           }
           await tester.pumpWidget(const SizedBox());
           settings.dispose();
@@ -157,6 +156,8 @@ void main() {
         );
         await tester.pumpWidget(
           MaterialApp(
+            supportedLocales: AppLocalizations.supportedLocales,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
             debugShowCheckedModeBanner: false,
             theme: AppTheme.create(),
             home: GamePage(game: game, settings: settings, viewModel: model),
@@ -258,26 +259,6 @@ void main() {
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox());
     settings.dispose();
-  });
-}
-
-Future<void> _capture(WidgetTester tester, GlobalKey key, String name) async {
-  final pictures = tester.widgetList<Image>(find.byType(Image)).toList();
-  await tester.runAsync(() async {
-    for (final picture in pictures) {
-      await precacheImage(picture.image, key.currentContext!);
-    }
-  });
-  await _settleHome(tester);
-  await tester.runAsync(() async {
-    final boundary =
-        key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
-    final image = await boundary.toImage(pixelRatio: 1);
-    final data = await image.toByteData(format: ui.ImageByteFormat.png);
-    final file = File('docs/previews/$name.png');
-    await file.parent.create(recursive: true);
-    await file.writeAsBytes(data!.buffer.asUint8List());
-    image.dispose();
   });
 }
 

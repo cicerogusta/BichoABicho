@@ -1,10 +1,12 @@
 import 'dart:async';
+
 import 'package:flutter/foundation.dart';
-import '../domain/settings_repository.dart';
+
 import '../../../core/analytics/usage_analytics.dart';
 import '../../games/domain/game_definition.dart';
 import '../../progress/domain/learning_history.dart';
 import '../../progress/domain/profile_catalog.dart';
+import '../domain/settings_repository.dart';
 
 class AppSettings extends ChangeNotifier {
   AppSettings(this._repository, {this.analytics = const NoopUsageAnalytics()});
@@ -33,7 +35,6 @@ class AppSettings extends ChangeNotifier {
   List<LearnerProfile> get profiles => _catalog.profiles;
   LearnerProfile profile(int id) => _catalog.profile(id);
   bool profileIsConfigured(int id) => profile(id).configured;
-  String profileLabel(int id) => profile(id).label;
   bool _disposed = false;
 
   Future<int> createProfile({

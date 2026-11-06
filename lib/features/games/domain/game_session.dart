@@ -1,8 +1,11 @@
 import 'dart:math';
+
+import 'package:bicho_a_bicho/features/animals/domain/animal_catalog.dart';
+
 import '../../animals/domain/animal.dart';
-import 'game_definition.dart';
 import 'animal_story.dart';
 import 'drawing_template.dart';
+import 'game_definition.dart';
 import 'memory_board.dart';
 
 class GameChoice {
@@ -16,10 +19,10 @@ class GameRound {
   GameRound({
     required this.animal,
     required this.answer,
-    required this.choices,
+    required List<GameChoice> choices,
     required this.quantity,
     this.story,
-  });
+  }) : choices = List.unmodifiable(choices);
   final Animal animal;
   final String answer;
   final List<GameChoice> choices;
@@ -91,9 +94,7 @@ class GameSession {
         return GameRound(
           animal: animal,
           answer: answer,
-          choices: kind == GameKind.drawing
-              ? const []
-              : List.unmodifiable(choices),
+          choices: kind == GameKind.drawing ? const [] : choices,
           quantity: quantity,
           story: kind == GameKind.stories
               ? AnimalStory.forRound(animal, companion, index)

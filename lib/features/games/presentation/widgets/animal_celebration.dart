@@ -1,8 +1,11 @@
 import 'dart:math' as math;
+
+import 'package:bicho_a_bicho/l10n/localization.dart';
 import 'package:flutter/material.dart';
-import '../../../animals/domain/animal.dart';
+
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/soft_card.dart';
+import '../../../animals/domain/animal.dart';
 
 /// A finite celebration: no flashing, infinite loops or navigation side effects.
 class AnimalCelebration extends StatefulWidget {
@@ -40,7 +43,7 @@ class _AnimalCelebrationState extends State<AnimalCelebration>
 
   @override
   Widget build(BuildContext context) => Semantics(
-    label: '${widget.animal.name} comemorando seu acerto',
+    label: context.l10n.celebratingAnimal(widget.animal.name),
     image: true,
     child: ExcludeSemantics(
       child: SizedBox(
